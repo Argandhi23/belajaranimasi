@@ -2,7 +2,19 @@
 
 This is the initial instruction template for the planned `belajar-animasi` repository. Build application features only when requested; the environment setup task does not authorize scaffolding the application.
 
-## Stack and budget
+## Git workflow — mandatory for every change
+
+- Before editing code, documentation, configuration, dependencies, tests, or any other tracked project file, inspect `git status` and the current branch. Create or select a dedicated task branch; never edit or commit directly on `main`.
+- Use descriptive names: `feat/<topic>`, `fix/<topic>`, `docs/<topic>`, or `chore/<topic>`. Keep one coherent task per branch and preserve unrelated local changes.
+- Start new work from an up-to-date `main` when the working tree is clean. Use `git fetch origin` and `git pull --ff-only` rather than silently rewriting history. Do not automatically stash, discard, or move another task's changes.
+- Stage explicit files, inspect the diff, and run checks appropriate to the change before committing. Never include secrets, `.env`, unrelated local documents, or generated build output.
+- Push the task branch and open a pull request targeting `main` when publication is authorized. A request to push does not by itself authorize merging an ongoing task's pull request. Merge only after the user explicitly requests it and relevant checks pass.
+- Explain the current branch, what the commit contains, what the pull request proposes, and whether it has been merged. Teach branch, commit, pull request, merge, conflict resolution, and synchronization briefly in Indonesian as they arise.
+- Do not force-push, rewrite shared history, delete branches, change repository protection/settings, or resolve conflicts by discarding changes without authorization. Explain conflicts and preserve both intended behaviors.
+- After an authorized merge, synchronize local `main` with `git pull --ff-only`; create the next task branch from that baseline. Branch cleanup is a separate deliberate action.
+- Initial publication exception: the already-created project baseline may be pushed once to an empty remote `main`. All subsequent changes, including these workflow instructions, must use a task branch and pull request.
+
+## Stack and budget requirements
 
 - Frontend: React, Vite, strict TypeScript, Tailwind CSS, GSAP/ScrollTrigger, React Three Fiber, and Three.js.
 - Backend: NestJS, strict TypeScript, REST, Swagger/OpenAPI, PostgreSQL, and Prisma.
