@@ -2,8 +2,6 @@
 
 This is the initial instruction template for the planned `belajar-animasi` repository. Build application features only when requested; the environment setup task does not authorize scaffolding the application.
 
-## Stack and budget
-
 ## Git workflow — mandatory for every change
 
 - Before editing code, documentation, configuration, dependencies, tests, or any other tracked project file, inspect `git status` and the current branch. Create or select a dedicated task branch; never edit or commit directly on `main`.
