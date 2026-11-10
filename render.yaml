@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: belajar-animasi-api
+    runtime: node
+    plan: free
+    autoDeployTrigger: off
+    buildCommand: pnpm install --frozen-lockfile --ignore-scripts && pnpm db:generate && pnpm --filter @belajar/api build
+    startCommand: pnpm --filter @belajar/api start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 26.13.0
+      - key: PNPM_VERSION
+        value: 11.25.0
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false

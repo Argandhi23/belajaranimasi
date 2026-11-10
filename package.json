@@ -1,0 +1,41 @@
+{
+  "name": "belajar-animasi",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": "26.13.0",
+    "pnpm": "11.25.0"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @belajar/api --filter @belajar/web dev",
+    "build": "pnpm --filter @belajar/api build && pnpm --filter @belajar/web build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:integration": "pnpm --filter @belajar/api test:integration",
+    "test:e2e": "playwright test",
+    "db:generate": "pnpm --filter @belajar/api db:generate",
+    "db:migrate": "pnpm --filter @belajar/api db:migrate",
+    "db:seed": "pnpm --filter @belajar/api db:seed",
+    "contracts": "pnpm --filter @belajar/api contracts",
+    "db:up": "docker compose up -d --wait db",
+    "local:setup": "node scripts/setup-local.mjs",
+    "db:reader": "pnpm --filter @belajar/api exec tsx scripts/provision-reader.ts",
+    "db:test:prepare": "node scripts/prepare-test-db.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.65.0",
+    "@types/node": "^26.6.6",
+    "concurrently": "^10.0.7",
+    "eslint": "^10.14.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "prettier": "^3.9.10",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.1",
+    "vitest": "^5.1.0"
+  }
+}

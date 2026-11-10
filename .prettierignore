@@ -1,0 +1,10 @@
+node_modules
+dist
+pnpm-lock.yaml
+apps/api/src/generated
+packages/shared/src/api.d.ts
+CODEX_SETUP_REPORT.md
+AGENTS.md
+test-results
+playwright-report
+.local

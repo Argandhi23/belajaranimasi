@@ -1,0 +1,273 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/animations": {
+      "get": {
+        "operationId": "CatalogueController_list",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 12,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 10000,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "difficulty",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": ["BEGINNER", "INTERMEDIATE", "ADVANCED"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 200, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AnimationPage" }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiError" }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiError" }
+              }
+            }
+          }
+        },
+        "tags": ["Public catalogue"]
+      }
+    },
+    "/api/animations/{slug}": {
+      "get": {
+        "operationId": "CatalogueController_detail",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Animation" }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiError" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiError" }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiError" }
+              }
+            }
+          }
+        },
+        "tags": ["Public catalogue"]
+      }
+    },
+    "/api/categories": {
+      "get": {
+        "operationId": "CatalogueController_categories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Category" }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiError" }
+              }
+            }
+          }
+        },
+        "tags": ["Public catalogue"]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "HealthController_health",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Health" }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiError" }
+              }
+            }
+          }
+        },
+        "tags": ["Health"]
+      }
+    }
+  },
+  "info": {
+    "title": "Belajar Animasi API",
+    "description": "Public read-only catalogue; authentication is not required. No write endpoints.",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "ApiError": {
+        "type": "object",
+        "properties": {
+          "statusCode": { "type": "number" },
+          "message": { "type": "string" }
+        },
+        "required": ["statusCode", "message"]
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "slug": { "type": "string" },
+          "name": { "type": "string" }
+        },
+        "required": ["slug", "name"]
+      },
+      "Animation": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "slug": { "type": "string" },
+          "technicalName": { "type": "string" },
+          "indonesianName": { "type": "string" },
+          "shortDescription": { "type": "string" },
+          "explanation": { "type": "string" },
+          "difficulty": {
+            "type": "string",
+            "enum": ["BEGINNER", "INTERMEDIATE", "ADVANCED"]
+          },
+          "category": { "$ref": "#/components/schemas/Category" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "keywords": { "type": "array", "items": { "type": "string" } },
+          "libraries": { "type": "array", "items": { "type": "string" } },
+          "demoId": { "type": "string" },
+          "codeExampleId": { "type": "string" },
+          "aiPrompt": { "type": "string" },
+          "published": { "type": "boolean" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        },
+        "required": [
+          "id",
+          "slug",
+          "technicalName",
+          "indonesianName",
+          "shortDescription",
+          "explanation",
+          "difficulty",
+          "category",
+          "tags",
+          "keywords",
+          "libraries",
+          "demoId",
+          "codeExampleId",
+          "aiPrompt",
+          "published",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "AnimationPage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Animation" }
+          },
+          "total": { "type": "number" },
+          "page": { "type": "number" },
+          "limit": { "type": "number" }
+        },
+        "required": ["items", "total", "page", "limit"]
+      },
+      "Health": {
+        "type": "object",
+        "properties": { "status": { "type": "string", "enum": ["ok"] } },
+        "required": ["status"]
+      }
+    }
+  }
+}

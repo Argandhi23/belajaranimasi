@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated/prisma"
+}
+datasource db {
+  provider = "postgresql"
+}
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+model AnimationCategory {
+  id String @id @default(cuid())
+  slug String @unique
+  name String
+  animations Animation[]
+}
+model AnimationTag {
+  id String @id @default(cuid())
+  name String @unique
+  animations AnimationTagRelation[]
+}
+model AnimationTagRelation {
+  animationId String
+  tagId String
+  animation Animation @relation(fields: [animationId], references: [id], onDelete: Cascade)
+  tag AnimationTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  @@id([animationId, tagId])
+}
+model Animation {
+  id String @id @default(cuid())
+  slug String @unique
+  technicalName String
+  indonesianName String
+  shortDescription String
+  explanation String
+  difficulty Difficulty
+  categoryId String
+  category AnimationCategory @relation(fields: [categoryId], references: [id])
+  tags AnimationTagRelation[]
+  keywords String[]
+  libraries String[]
+  demoId String
+  codeExampleId String
+  aiPrompt String
+  published Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  searchVector Unsupported("tsvector")?
+  @@index([published, categoryId, difficulty])
+  @@index([searchVector], type: Gin)
+}
