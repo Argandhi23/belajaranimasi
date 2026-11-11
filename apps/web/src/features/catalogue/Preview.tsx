@@ -25,6 +25,13 @@ export function Preview({ id }: { id: string }) {
               { y: (index) => [-10, -28, -50][index], stagger: 0 },
               0,
             );
+          else if (id === 'svg-draw')
+            timeline.fromTo(
+              '.svg-draw-line',
+              { strokeDasharray: 220, strokeDashoffset: 220 },
+              { strokeDashoffset: 0 },
+              0,
+            );
           else
             timeline.to('.preview-shape', {
               rotation: id === 'scroll-cube' ? 110 : 180,
@@ -60,7 +67,9 @@ export function Preview({ id }: { id: string }) {
           ? '01 / SCROLL'
           : id === 'depth-parallax'
             ? '02 / DEPTH'
-            : '03 / WEBGL'}
+            : id === 'scroll-cube'
+              ? '03 / WEBGL'
+              : '04 / VECTOR'}
       </span>
       <div className="preview-art" aria-hidden="true">
         {id === 'depth-parallax' ? (
@@ -80,6 +89,27 @@ export function Preview({ id }: { id: string }) {
               stroke="#9c512c"
               strokeWidth="1.5"
             />
+          </svg>
+        ) : id === 'svg-draw' ? (
+          <svg className="preview-shape svg-draw-sketch" viewBox="0 0 180 110">
+            <path
+              d="M 16 78 C 52 18, 92 98, 126 38 C 144 12, 156 54, 166 28"
+              fill="none"
+              stroke="#99ccb9"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeDasharray="5 7"
+            />
+            <path
+              className="svg-draw-line"
+              d="M 16 78 C 52 18, 92 98, 126 38 C 144 12, 156 54, 166 28"
+              fill="none"
+              stroke="#1f7a5c"
+              strokeWidth="6"
+              strokeLinecap="round"
+            />
+            <circle cx="16" cy="78" r="5" fill="#1f7a5c" />
+            <circle cx="166" cy="28" r="5" fill="#1f7a5c" />
           </svg>
         ) : (
           <i className="preview-shape preview-square">

@@ -5,12 +5,13 @@ import type { AnimationPage, Category } from '@belajar/shared';
 import { getJson } from '../../lib/api';
 import { Loading, Failure } from '../../components/Feedback';
 import { Preview } from './Preview';
-import { catalogueQuery } from './discovery';
+import { catalogueQuery, catalogueRangeLabel } from './discovery';
 export const difficultyNames: Record<string, string> = {
   BEGINNER: 'Pemula',
   INTERMEDIATE: 'Menengah',
   ADVANCED: 'Lanjutan',
 };
+const baseCatalogueQuery = catalogueQuery(new URLSearchParams());
 export function Catalogue() {
   const [params, setParams] = useSearchParams();
   const query = catalogueQuery(params);
@@ -19,6 +20,15 @@ export function Catalogue() {
     queryFn: ({ signal }) =>
       getJson<AnimationPage>(`/api/animations?${query}`, signal),
   });
+  const catalogueTotal = useQuery({
+    queryKey: ['animations', baseCatalogueQuery],
+    queryFn: ({ signal }) =>
+      getJson<AnimationPage>(`/api/animations?${baseCatalogueQuery}`, signal),
+  });
+  const rangeLabel = catalogueRangeLabel(
+    catalogueTotal.data?.total,
+    catalogueTotal.isPending,
+  );
   const categories = useQuery({
     queryKey: ['categories'],
     queryFn: ({ signal }) => getJson<Category[]>('/api/categories', signal),
@@ -84,7 +94,12 @@ export function Catalogue() {
         </form>
         <div className="search-hints">
           <span>Coba cari:</span>
-          {['diam saat scroll', 'beda kecepatan', 'kubus 3D'].map((term) => (
+          {[
+            'diam saat scroll',
+            'beda kecepatan',
+            'kubus 3D',
+            'menggambar garis',
+          ].map((term) => (
             <button key={term} onClick={() => update('q', term)}>
               {term}
             </button>
@@ -97,7 +112,7 @@ export function Catalogue() {
       >
         <div className="catalogue-heading">
           <h2 id="catalogue-heading">
-            Eksplorasi animasi <span>01—03</span>
+            Eksplorasi animasi {rangeLabel && <span>{rangeLabel}</span>}
           </h2>
           <span className="mono">BELAJAR LEWAT GERAK</span>
         </div>
@@ -116,6 +131,8 @@ export function Catalogue() {
                   'scroll-trigger',
                   'parallax',
                   '3d',
+                  'svg-morph',
+                  'svg-draw',
                   'scroll-pinning',
                   'depth-parallax',
                   'scroll-3d',
