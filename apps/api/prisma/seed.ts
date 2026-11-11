@@ -10,7 +10,7 @@ const categories = [
   ['timeline', 'Multi-stage timeline'],
   ['horizontal', 'Horizontal storytelling'],
   ['typography', 'Kinetic typography'],
-  ['svg-morph', 'SVG morph'],
+  ['svg-morph', 'SVG morph & draw'],
   ['motion-path', 'Motion path'],
   ['flip', 'FLIP layout'],
   ['stagger', 'Stagger'],
@@ -115,6 +115,42 @@ const records = [
     tags: ['scroll', '3d', 'webgl'],
     aiPrompt:
       'Buat demo React Three Fiber TypeScript berupa kubus yang berputar mengikuti progres scroll. Gunakan boxGeometry 1.7 � 1.7 � 1.7, rotasi awal [0.35, 0.5, 0], kamera tetap [0, 0, 5] dengan fov 45, ambientLight 1.5 dan directionalLight 3. Track 240svh dan panggung sticky 85svh, minimal 400 px. GSAP mengubah rotation.x ke Math.PI � 1.3 dan rotation.y ke Math.PI � 2.25 dengan ease none; ScrollTrigger start top top, end bottom bottom, scrub true. Lazy-load scene, gunakan demand rendering dan DPR maksimal 1.5, serta satu pemilik rotasi. Invalidate hanya saat scroll mengubah rotasi dan canvas terlihat di tab aktif; hentikan observer dan listener saat unmount. Sediakan fallback jika WebGL tidak tersedia atau konteks hilang, reduced motion statis, dan cleanup resource serta listener saat unmount.',
+  },
+  {
+    slug: 'svg-draw',
+    technicalName: 'Scroll-linked SVG Stroke Draw',
+    indonesianName: 'Garis SVG menggambar saat halaman digulir',
+    shortDescription:
+      'Gambar jalur vektor secara bertahap dari awal hingga akhir mengikuti progres scroll.',
+    explanation:
+      'Teknik SVG draw memanfaatkan properti stroke-dasharray dan stroke-dashoffset untuk menyembunyikan lalu menyingkap jalur vektor. Ketika panjang jeda dash disamakan dengan panjang total kurva dari getTotalLength(), menggerakkan offset dari panjang penuh menuju nol membuat garis tampak digambar secara langsung.\n\nDengan menghubungkan perubahan stroke-dashoffset ke GSAP ScrollTrigger melalui scrub, kecepatan menggambar mengikuti posisi gulir pengguna. Pendekatan ini cocok untuk diagram alur, peta rute, atau ilustrasi editorial yang ingin memandu fokus mata dari satu titik ke titik berikutnya.\n\nPada contoh ini, kurva utama memiliki panjang yang dihitung ulang saat ukuran layar berubah melalui invalidateOnRefresh. Preferensi reduced motion mematikan animasi dashoffset sehingga gambar vektor tampil utuh sejak awal tanpa perlu digulir.',
+    difficulty: 'BEGINNER' as const,
+    category: 'svg-morph',
+    keywords: [
+      'svg',
+      'draw',
+      'gambar',
+      'menggambar',
+      'garis',
+      'jalur',
+      'path',
+      'vektor',
+      'stroke',
+      'dashoffset',
+      'dasharray',
+      'mengikuti',
+      'scroll',
+      'gulir',
+      'menggulir',
+      'sketsa',
+      'kurva',
+      'tumbuh',
+      'ilustrasi',
+    ],
+    libraries: ['GSAP', 'ScrollTrigger', 'React'],
+    tags: ['scroll', 'svg', 'draw'],
+    aiPrompt:
+      'Buat komponen React TypeScript untuk demo SVG Draw yang menggambar jalur vektor mengikuti progres scroll. Buat panggung setinggi 110svh, minimal 560 px, berisi SVG viewBox 0 0 600 260 dengan jalur petunjuk tipis dan jalur utama melengkung. Gunakan useGSAP dengan scoped ref, hitung panjang kurva memakai getTotalLength(), lalu animasikan strokeDasharray dan strokeDashoffset dari panjang penuh ke 0 dengan ease none. Hubungkan ke ScrollTrigger pada panggung dengan start top 65%, end bottom 35%, scrub true, dan invalidateOnRefresh true. Refresh setelah font siap. Gunakan gsap.matchMedia untuk prefers-reduced-motion agar gambar SVG tampil lengkap secara statis ketika gerak dikurangi, serta bersihkan semua trigger saat unmount.',
   },
 ];
 export async function seed(prisma: PrismaClient) {

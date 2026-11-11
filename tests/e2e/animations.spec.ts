@@ -118,3 +118,37 @@ test('WebGL-unavailable cube has a usable fallback', async ({ page }) => {
   await page.goto('/demo/scroll-cube');
   await expect(page.getByTestId('cube-fallback')).toBeVisible();
 });
+test('svg draw reduces strokeDashoffset on scroll, navigates cleanly and shows full path on reduced motion', async ({
+  page,
+}) => {
+  await page.goto('/demo/svg-draw');
+  const path = page.getByTestId('svg-draw-path');
+  await expect(path).toBeVisible();
+  const initialOffset = await path.evaluate((el) =>
+    parseFloat(getComputedStyle(el).strokeDashoffset),
+  );
+  expect(initialOffset).toBeGreaterThan(100);
+  await page
+    .getByTestId('svg-draw-stage')
+    .evaluate((el) =>
+      window.scrollTo(
+        0,
+        el.getBoundingClientRect().top + scrollY + innerHeight * 0.5,
+      ),
+    );
+  await expect
+    .poll(() =>
+      path.evaluate((el) => parseFloat(getComputedStyle(el).strokeDashoffset)),
+    )
+    .toBeLessThan(initialOffset);
+  await page.getByRole('link', { name: 'Belajar Animasi, beranda' }).click();
+  await expect(page.getByTestId('svg-draw-path')).toHaveCount(0);
+  await page
+    .getByRole('link', { name: 'Scroll-linked SVG Stroke Draw' })
+    .click();
+  await expect(page.getByTestId('svg-draw-path')).toBeVisible();
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect
+    .poll(() => path.evaluate((el) => getComputedStyle(el).strokeDashoffset))
+    .toBe('0px');
+});

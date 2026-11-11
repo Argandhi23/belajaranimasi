@@ -344,6 +344,12 @@ nav {
   color: #80634a;
   background-image: radial-gradient(#b3927033 0.7px, transparent 0.7px);
 }
+.preview-svg-draw {
+  background-color: #e9f5f0;
+  border-color: #d3ebe1;
+  color: #2d6a54;
+  background-image: radial-gradient(#52998033 0.7px, transparent 0.7px);
+}
 .preview-index {
   position: absolute;
   left: 17px;
@@ -429,6 +435,10 @@ nav {
   width: 112px;
   height: 127px;
 }
+.svg-draw-sketch {
+  width: 170px;
+  height: 104px;
+}
 .card-meta {
   display: flex;
   align-items: center;
@@ -447,6 +457,9 @@ nav {
   height: 5px;
   border-radius: 50%;
   background: #ba7a2e;
+}
+.difficulty-beginner i {
+  background: #1f7a5c;
 }
 .difficulty-advanced i {
   background: #8c66bd;

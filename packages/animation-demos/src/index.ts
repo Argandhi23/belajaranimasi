@@ -1,6 +1,11 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
 
-export const demoIds = ['pin-scrub', 'depth-parallax', 'scroll-cube'] as const;
+export const demoIds = [
+  'pin-scrub',
+  'depth-parallax',
+  'scroll-cube',
+  'svg-draw',
+] as const;
 export type DemoId = (typeof demoIds)[number];
 export const demos: Record<
   DemoId,
@@ -20,5 +25,9 @@ export const demos: Record<
   'scroll-cube': {
     Component: lazy(() => import('./ScrollCube')),
     loadSource: () => import('./ScrollCube.tsx?raw').then((m) => m.default),
+  },
+  'svg-draw': {
+    Component: lazy(() => import('./SvgDraw')),
+    loadSource: () => import('./SvgDraw.tsx?raw').then((m) => m.default),
   },
 };

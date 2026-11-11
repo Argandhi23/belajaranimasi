@@ -2,6 +2,7 @@ export const implementedIds = [
   'pin-scrub',
   'depth-parallax',
   'scroll-cube',
+  'svg-draw',
 ] as const;
 export function isDemoId(
   value: string,
@@ -21,4 +22,12 @@ export function catalogueQuery(params: URLSearchParams) {
   );
   query.set('limit', '12');
   return query.toString();
+}
+export function catalogueRangeLabel(
+  total: number | undefined,
+  isPending = false,
+) {
+  if (total === undefined) return isPending ? '...' : '';
+  if (total <= 0) return '00';
+  return `01—${String(total).padStart(2, '0')}`;
 }
