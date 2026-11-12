@@ -152,6 +152,43 @@ const records = [
     aiPrompt:
       'Buat komponen React TypeScript untuk demo SVG Draw yang menggambar jalur vektor mengikuti progres scroll. Buat panggung setinggi 110svh, minimal 560 px, berisi SVG viewBox 0 0 600 260 dengan jalur petunjuk tipis dan jalur utama melengkung. Gunakan useGSAP dengan scoped ref, hitung panjang kurva memakai getTotalLength(), lalu animasikan strokeDasharray dan strokeDashoffset dari panjang penuh ke 0 dengan ease none. Hubungkan ke ScrollTrigger pada panggung dengan start top 65%, end bottom 35%, scrub true, dan invalidateOnRefresh true. Refresh setelah font siap. Gunakan gsap.matchMedia untuk prefers-reduced-motion agar gambar SVG tampil lengkap secara statis ketika gerak dikurangi, serta bersihkan semua trigger saat unmount.',
   },
+  {
+    slug: 'svg-morph',
+    technicalName: 'Scroll-linked SVG Shape Morph',
+    indonesianName: 'Bentuk SVG berubah mengikuti scroll',
+    shortDescription:
+      'Ubah satu bentuk vektor menjadi bentuk lain secara mulus mengikuti progres scroll.',
+    explanation:
+      'Teknik SVG morphing mengubah satu bentuk vektor menjadi bentuk lain dengan menginterpolasi atribut d pada elemen path. Ketika bentuk awal dan bentuk akhir disusun dengan urutan perintah kurva kubik Bézier (M, C, Z) dan jumlah titik kontrol yang sepadan, setiap pasangan koordinat dapat bergeser secara presisi dari posisi asal ke posisi tujuan.\n\nDengan menghubungkan perubahan atribut d ke GSAP ScrollTrigger melalui scrub, transisi bentuk berlangsung seiring jarak gulir pengguna. Pendekatan ini berguna untuk menceritakan perubahan status, evolusi ikon, atau ilustrasi konsep yang bertransformasi secara bertahap.\n\nPada contoh ini, lingkaran empat segmen berubah menjadi bintang empat sudut sambil menampilkan siluet awal dan akhir sebagai pembanding. Saat preferensi reduced motion aktif, animasi atribut d dimatikan dan kedua bentuk pembanding tetap tampil statis sehingga transformasi tetap dapat dipahami tanpa gerak.',
+    difficulty: 'INTERMEDIATE' as const,
+    category: 'svg-morph',
+    keywords: [
+      'svg',
+      'morph',
+      'morphing',
+      'bentuk',
+      'berubah',
+      'perubahan',
+      'transformasi',
+      'transisi',
+      'wujud',
+      'lingkaran',
+      'bintang',
+      'siluet',
+      'path',
+      'vektor',
+      'kurva',
+      'bezier',
+      'mengikuti',
+      'scroll',
+      'gulir',
+      'menggulir',
+    ],
+    libraries: ['GSAP', 'ScrollTrigger', 'React'],
+    tags: ['scroll', 'svg', 'morph'],
+    aiPrompt:
+      'Buat komponen React TypeScript untuk demo SVG Morph yang mengubah bentuk lingkaran menjadi bintang empat sudut mengikuti progres scroll. Buat panggung setinggi 100svh, minimal 520 px, berisi SVG viewBox 0 0 640 320 dengan siluet pembanding bentuk awal di kiri, siluet bentuk akhir di kanan, kontur tujuan di tengah, dan path utama yang dianimasikan. Gunakan dua string path dengan empat segmen kubik Bézier (M dan 4 perintah C lalu Z) yang memiliki jumlah titik sepadan. Gunakan useGSAP dengan scoped ref untuk menganimasikan attr.d dari path awal ke path akhir dengan ease none, ScrollTrigger start top 65%, end bottom 35%, scrub true, dan invalidateOnRefresh true. Refresh setelah font siap. Gunakan gsap.matchMedia untuk prefers-reduced-motion agar perbandingan bentuk statis tetap jelas ketika gerak dikurangi, serta bersihkan trigger saat unmount.',
+  },
 ];
 export async function seed(prisma: PrismaClient) {
   await prisma.$transaction(

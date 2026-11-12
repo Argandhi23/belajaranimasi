@@ -99,6 +99,7 @@ export function Catalogue() {
             'beda kecepatan',
             'kubus 3D',
             'menggambar garis',
+            'bentuk berubah',
           ].map((term) => (
             <button key={term} onClick={() => update('q', term)}>
               {term}

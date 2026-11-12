@@ -3,6 +3,7 @@ export const implementedIds = [
   'depth-parallax',
   'scroll-cube',
   'svg-draw',
+  'svg-morph',
 ] as const;
 export function isDemoId(
   value: string,

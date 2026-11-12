@@ -3,6 +3,10 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { Play, Pause } from 'lucide-react';
 gsap.registerPlugin(useGSAP);
+const PREVIEW_MORPH_START =
+  'M 60 16 C 84 16, 104 36, 104 60 C 104 84, 84 104, 60 104 C 36 104, 16 84, 16 60 C 16 36, 36 16, 60 16 Z';
+const PREVIEW_MORPH_END =
+  'M 60 8 C 68 42, 78 52, 112 60 C 78 68, 68 78, 60 112 C 52 78, 42 68, 8 60 C 42 52, 52 42, 60 8 Z';
 export function Preview({ id }: { id: string }) {
   const root = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -30,6 +34,13 @@ export function Preview({ id }: { id: string }) {
               '.svg-draw-line',
               { strokeDasharray: 220, strokeDashoffset: 220 },
               { strokeDashoffset: 0 },
+              0,
+            );
+          else if (id === 'svg-morph')
+            timeline.fromTo(
+              '.svg-morph-shape',
+              { attr: { d: PREVIEW_MORPH_START } },
+              { attr: { d: PREVIEW_MORPH_END } },
               0,
             );
           else
@@ -69,7 +80,9 @@ export function Preview({ id }: { id: string }) {
             ? '02 / DEPTH'
             : id === 'scroll-cube'
               ? '03 / WEBGL'
-              : '04 / VECTOR'}
+              : id === 'svg-draw'
+                ? '04 / VECTOR'
+                : '05 / MORPH'}
       </span>
       <div className="preview-art" aria-hidden="true">
         {id === 'depth-parallax' ? (
@@ -110,6 +123,24 @@ export function Preview({ id }: { id: string }) {
             />
             <circle cx="16" cy="78" r="5" fill="#1f7a5c" />
             <circle cx="166" cy="28" r="5" fill="#1f7a5c" />
+          </svg>
+        ) : id === 'svg-morph' ? (
+          <svg className="preview-shape svg-morph-sketch" viewBox="0 0 120 120">
+            <path
+              d={PREVIEW_MORPH_END}
+              fill="none"
+              stroke="#d7abc3"
+              strokeWidth="2.5"
+              strokeDasharray="4 5"
+            />
+            <path
+              className="svg-morph-shape"
+              d={PREVIEW_MORPH_START}
+              fill="#d96b9e33"
+              stroke="#8f3465"
+              strokeWidth="4.5"
+              strokeLinejoin="round"
+            />
           </svg>
         ) : (
           <i className="preview-shape preview-square">
