@@ -5,6 +5,7 @@ export const demoIds = [
   'depth-parallax',
   'scroll-cube',
   'svg-draw',
+  'svg-morph',
 ] as const;
 export type DemoId = (typeof demoIds)[number];
 export const demos: Record<
@@ -29,5 +30,9 @@ export const demos: Record<
   'svg-draw': {
     Component: lazy(() => import('./SvgDraw')),
     loadSource: () => import('./SvgDraw.tsx?raw').then((m) => m.default),
+  },
+  'svg-morph': {
+    Component: lazy(() => import('./SvgMorph')),
+    loadSource: () => import('./SvgMorph.tsx?raw').then((m) => m.default),
   },
 };

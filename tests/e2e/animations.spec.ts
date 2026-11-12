@@ -152,3 +152,29 @@ test('svg draw reduces strokeDashoffset on scroll, navigates cleanly and shows f
     .poll(() => path.evaluate((el) => getComputedStyle(el).strokeDashoffset))
     .toBe('0px');
 });
+test('svg morph interpolates path d attribute on scroll, navigates cleanly and reverts to static comparison on reduced motion', async ({
+  page,
+}) => {
+  await page.goto('/demo/svg-morph');
+  const path = page.getByTestId('svg-morph-path');
+  await expect(path).toBeVisible();
+  const initialD = await path.getAttribute('d');
+  expect(initialD).toBeTruthy();
+  await page
+    .getByTestId('svg-morph-stage')
+    .evaluate((el) =>
+      window.scrollTo(
+        0,
+        el.getBoundingClientRect().top + scrollY + innerHeight * 0.5,
+      ),
+    );
+  await expect.poll(() => path.getAttribute('d')).not.toBe(initialD);
+  await page.getByRole('link', { name: 'Belajar Animasi, beranda' }).click();
+  await expect(page.getByTestId('svg-morph-path')).toHaveCount(0);
+  await page
+    .getByRole('link', { name: 'Scroll-linked SVG Shape Morph' })
+    .click();
+  await expect(page.getByTestId('svg-morph-path')).toBeVisible();
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect.poll(() => path.getAttribute('d')).toBe(initialD);
+});

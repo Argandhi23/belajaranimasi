@@ -350,6 +350,12 @@ nav {
   color: #2d6a54;
   background-image: radial-gradient(#52998033 0.7px, transparent 0.7px);
 }
+.preview-svg-morph {
+  background-color: #f8ecf3;
+  border-color: #ebd5e2;
+  color: #7c355b;
+  background-image: radial-gradient(#b56a9233 0.7px, transparent 0.7px);
+}
 .preview-index {
   position: absolute;
   left: 17px;
@@ -438,6 +444,10 @@ nav {
 .svg-draw-sketch {
   width: 170px;
   height: 104px;
+}
+.svg-morph-sketch {
+  width: 122px;
+  height: 122px;
 }
 .card-meta {
   display: flex;

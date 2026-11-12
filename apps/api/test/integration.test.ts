@@ -55,7 +55,7 @@ test('published list, pagination, detail and taxonomy', async () => {
   const page = await fetch(base + '/api/animations?limit=2').then((r) =>
     r.json(),
   );
-  assert.equal(page.total, 4);
+  assert.equal(page.total, 5);
   assert.equal(page.items.length, 2);
   const next = await fetch(base + '/api/animations?limit=2&page=2').then((r) =>
     r.json(),
@@ -72,6 +72,11 @@ test('published list, pagination, detail and taxonomy', async () => {
   );
   assert.equal(svgDetail.demoId, 'svg-draw');
   assert.equal(svgDetail.category.slug, 'svg-morph');
+  const morphDetail = await fetch(base + '/api/animations/svg-morph').then(
+    (r) => r.json(),
+  );
+  assert.equal(morphDetail.demoId, 'svg-morph');
+  assert.equal(morphDetail.category.slug, 'svg-morph');
   assert.equal(
     (await fetch(base + '/api/animations/private-draft')).status,
     404,
@@ -87,6 +92,7 @@ test('natural language synonyms and combined filters', async () => {
     'latar bergerak beda kecepatan',
     'kubus berputar',
     'menggambar garis mengikuti scroll',
+    'bentuk berubah mengikuti scroll',
     'Saya mau objeknya diam di tengah saat scroll, lalu objek tersebut membesar dan berputar.',
   ]) {
     const body = await fetch(
@@ -97,7 +103,7 @@ test('natural language synonyms and combined filters', async () => {
   const stop = await fetch(base + '/api/animations?q=yang%20dan%20di').then(
     (r) => r.json(),
   );
-  assert.equal(stop.total, 4);
+  assert.equal(stop.total, 5);
   const filtered = await fetch(
     base + '/api/animations?category=pinning&difficulty=INTERMEDIATE',
   ).then((r) => r.json());
