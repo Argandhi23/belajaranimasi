@@ -154,42 +154,45 @@ const records = [
   },
 ];
 export async function seed(prisma: PrismaClient) {
-  await prisma.$transaction(async (tx) => {
-    for (const [slug, name] of categories)
-      await tx.animationCategory.upsert({
-        where: { slug },
-        create: { id: slug, slug, name },
-        update: { name },
-      });
-    for (const record of records) {
-      const { category, tags, ...content } = record;
-      const data = {
-        ...content,
-        demoId: content.slug,
-        codeExampleId: content.slug,
-        published: true,
-        categoryId: category,
-      };
-      const animation = await tx.animation.upsert({
-        where: { slug: content.slug },
-        create: data,
-        update: data,
-      });
-      await tx.animationTagRelation.deleteMany({
-        where: { animationId: animation.id },
-      });
-      for (const name of tags) {
-        const tag = await tx.animationTag.upsert({
-          where: { name },
-          create: { name },
-          update: {},
+  await prisma.$transaction(
+    async (tx) => {
+      for (const [slug, name] of categories)
+        await tx.animationCategory.upsert({
+          where: { slug },
+          create: { id: slug, slug, name },
+          update: { name },
         });
-        await tx.animationTagRelation.create({
-          data: { animationId: animation.id, tagId: tag.id },
+      for (const record of records) {
+        const { category, tags, ...content } = record;
+        const data = {
+          ...content,
+          demoId: content.slug,
+          codeExampleId: content.slug,
+          published: true,
+          categoryId: category,
+        };
+        const animation = await tx.animation.upsert({
+          where: { slug: content.slug },
+          create: data,
+          update: data,
         });
+        await tx.animationTagRelation.deleteMany({
+          where: { animationId: animation.id },
+        });
+        for (const name of tags) {
+          const tag = await tx.animationTag.upsert({
+            where: { name },
+            create: { name },
+            update: {},
+          });
+          await tx.animationTagRelation.create({
+            data: { animationId: animation.id, tagId: tag.id },
+          });
+        }
       }
-    }
-  });
+    },
+    { maxWait: 15000, timeout: 60000 },
+  );
 }
 if (
   process.argv[1] &&
