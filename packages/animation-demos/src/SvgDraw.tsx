@@ -49,22 +49,41 @@ export default function SvgDraw() {
     <section
       ref={root}
       data-testid="demo-svg-draw"
-      style={{ color: '#1d2d28', background: '#f6fbf9' }}
+      style={{ color: '#effff5', background: '#102821' }}
     >
-      <header style={{ padding: '64px 24px', maxWidth: 760, margin: 'auto' }}>
-        <p style={{ fontFamily: 'monospace', color: '#1b6b53' }}>
-          04 / SVG DRAW
-        </p>
-        <h2 style={{ fontSize: 'clamp(28px, 5vw, 48px)' }}>
+      <header
+        style={{
+          maxWidth: 1120,
+          margin: 'auto',
+          padding: 'clamp(26px, 4vw, 56px) clamp(20px, 5vw, 70px)',
+        }}
+      >
+        <h2
+          style={{
+            margin: '0 0 14px',
+            fontSize: 'clamp(1.8rem, 3.8vw, 3.6rem)',
+            fontWeight: 900,
+            letterSpacing: '-0.065em',
+            lineHeight: 1,
+            textWrap: 'balance',
+          }}
+        >
           Garis tumbuh mengikuti scroll.
         </h2>
-        <p>
-          Gulir ke bawah untuk menggambar jalur vektor dari titik awal hingga
-          akhir. Gulir kembali ke atas untuk menarik garisnya mundur.
+        <p style={{ margin: '0 0 8px', maxWidth: '58ch', lineHeight: 1.6 }}>
+          Gulir ke bawah untuk menggambar jalur dari titik awal. Gulir ke atas
+          untuk menarik garisnya kembali.
         </p>
-        <p>
-          Dengan pengurangan gerak aktif, seluruh jalur SVG langsung tampil utuh
-          tanpa animasi gambar bertahap.
+        <p
+          style={{
+            margin: 0,
+            maxWidth: '58ch',
+            color: '#bae7ce',
+            fontSize: '0.875rem',
+            lineHeight: 1.6,
+          }}
+        >
+          Jika pengurangan gerak aktif, seluruh garis langsung tampil utuh.
         </p>
       </header>
       <div
@@ -78,16 +97,16 @@ export default function SvgDraw() {
           position: 'relative',
           padding: 24,
           overflow: 'hidden',
-          backgroundImage:
-            'linear-gradient(#dfeee8 1px, transparent 1px), linear-gradient(90deg, #dfeee8 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
+          borderTop: '1px solid #355b4b',
+          background:
+            'linear-gradient(#a4f2c51a 1px, transparent 1px) center / 44px 44px, linear-gradient(90deg, #a4f2c51a 1px, transparent 1px) center / 44px 44px, radial-gradient(ellipse at center, #204535, transparent 72%), #0d221b',
         }}
       >
         <svg
           viewBox="0 0 640 320"
           aria-label="Jalur gelombang geometris yang digambar mengikuti scroll"
           style={{
-            width: 'min(92vw, 640px)',
+            width: 'min(100%, 880px)',
             height: 'auto',
             overflow: 'visible',
           }}
@@ -95,8 +114,9 @@ export default function SvgDraw() {
           <path
             d="M 48 248 C 128 72, 208 72, 272 176 S 416 280, 480 120 L 592 72"
             fill="none"
-            stroke="#cfe5dc"
-            strokeWidth="6"
+            stroke="#7db89e"
+            strokeWidth="2"
+            strokeDasharray="5 9"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
@@ -105,18 +125,18 @@ export default function SvgDraw() {
             data-testid="svg-draw-path"
             d="M 48 248 C 128 72, 208 72, 272 176 S 416 280, 480 120 L 592 72"
             fill="none"
-            stroke="#1f7a5c"
+            stroke="#a4f2c5"
             strokeWidth="6"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          <circle cx="48" cy="248" r="8" fill="#1f7a5c" />
+          <circle cx="48" cy="248" r="8" fill="#a4f2c5" />
           <circle
             cx="592"
             cy="72"
             r="8"
-            fill="#f6fbf9"
-            stroke="#1f7a5c"
+            fill="#102821"
+            stroke="#a4f2c5"
             strokeWidth="4"
           />
         </svg>
@@ -125,17 +145,27 @@ export default function SvgDraw() {
             position: 'absolute',
             bottom: 24,
             padding: '8px 16px',
-            background: '#f6fbf9',
-            border: '1px solid #cfe5dc',
-            borderRadius: 8,
-            fontFamily: 'monospace',
+            margin: 0,
+            background: '#102821',
+            border: '1px solid #355b4b',
+            borderRadius: 6,
+            color: '#bae7ce',
+            font: '0.8rem/1.5 monospace',
             textAlign: 'center',
           }}
         >
           strokeDashoffset: length → 0
         </p>
       </div>
-      <footer style={{ padding: '80px 24px', textAlign: 'center' }}>
+      <footer
+        style={{
+          borderTop: '1px solid #355b4b',
+          padding: 'clamp(36px, 7vw, 80px) 24px',
+          textAlign: 'center',
+          color: '#bae7ce',
+          lineHeight: 1.6,
+        }}
+      >
         <strong>Jalur selesai digambar.</strong>
         <p>
           Panjang path diukur dengan getTotalLength lalu dihubungkan ke posisi

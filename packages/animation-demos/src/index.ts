@@ -9,6 +9,9 @@ export const demoIds = [
   'horizontal-story',
   'kinetic-type',
   'flip-gallery',
+  'motion-path',
+  'magnetic-button',
+  'stagger-grid',
 ] as const;
 export type DemoId = (typeof demoIds)[number];
 export const demos: Record<
@@ -50,5 +53,17 @@ export const demos: Record<
   'svg-morph': {
     Component: lazy(() => import('./SvgMorph')),
     loadSource: () => import('./SvgMorph.tsx?raw').then((m) => m.default),
+  },
+  'motion-path': {
+    Component: lazy(() => import('./MotionPath')),
+    loadSource: () => import('./MotionPath.tsx?raw').then((m) => m.default),
+  },
+  'magnetic-button': {
+    Component: lazy(() => import('./MagneticButton')),
+    loadSource: () => import('./MagneticButton.tsx?raw').then((m) => m.default),
+  },
+  'stagger-grid': {
+    Component: lazy(() => import('./StaggerGrid')),
+    loadSource: () => import('./StaggerGrid.tsx?raw').then((m) => m.default),
   },
 };

@@ -52,24 +52,42 @@ export default function SvgMorph() {
     <section
       ref={root}
       data-testid="demo-svg-morph"
-      style={{ color: '#2b1e28', background: '#fcf7fa' }}
+      style={{ color: '#fff0fa', background: '#281728' }}
     >
-      <header style={{ padding: '64px 24px', maxWidth: 760, margin: 'auto' }}>
-        <p style={{ fontFamily: 'monospace', color: '#8f3465' }}>
-          05 / SVG MORPH
-        </p>
-        <h2 style={{ fontSize: 'clamp(28px, 5vw, 48px)' }}>
-          Satu bentuk bertransformasi menjadi bentuk lain.
+      <header
+        style={{
+          maxWidth: 1120,
+          margin: 'auto',
+          padding: 'clamp(26px, 4vw, 56px) clamp(20px, 5vw, 70px)',
+        }}
+      >
+        <h2
+          style={{
+            margin: '0 0 14px',
+            fontSize: 'clamp(1.8rem, 3.8vw, 3.6rem)',
+            fontWeight: 900,
+            letterSpacing: '-0.065em',
+            lineHeight: 1,
+            textWrap: 'balance',
+          }}
+        >
+          Lingkaran menjadi bintang.
         </h2>
-        <p>
-          Gulir ke bawah untuk menginterpolasi titik kontrol kurva Bézier dari
-          lingkaran menuju bintang empat sudut. Gulir kembali ke atas untuk
-          mengembalikannya ke bentuk semula.
+        <p style={{ margin: '0 0 8px', maxWidth: '58ch', lineHeight: 1.6 }}>
+          Gulir untuk mengubah lingkaran menjadi bintang empat sudut. Gulir ke
+          atas untuk mengembalikan bentuk awal.
         </p>
-        <p>
-          Dengan pengurangan gerak aktif, bentuk awal, garis kontur tujuan, dan
-          perbandingan di sisi kiri-kanan tetap tampil statis agar perubahan
-          geometri tetap mudah dipahami tanpa animasi.
+        <p
+          style={{
+            margin: 0,
+            maxWidth: '58ch',
+            color: '#edcce3',
+            fontSize: '0.875rem',
+            lineHeight: 1.6,
+          }}
+        >
+          Jika pengurangan gerak aktif, kedua bentuk tetap bisa dibandingkan
+          tanpa animasi.
         </p>
       </header>
       <div
@@ -83,25 +101,32 @@ export default function SvgMorph() {
           position: 'relative',
           padding: 24,
           overflow: 'hidden',
-          backgroundImage:
-            'linear-gradient(#f0dfe9 1px, transparent 1px), linear-gradient(90deg, #f0dfe9 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
+          borderTop: '1px solid #6b4564',
+          background:
+            'linear-gradient(#f6bde522 1px, transparent 1px) center / 44px 44px, linear-gradient(90deg, #f6bde522 1px, transparent 1px) center / 44px 44px, radial-gradient(ellipse at center, #492545, transparent 70%), #281728',
         }}
       >
         <svg
           viewBox="0 0 640 320"
           aria-label="Transformasi bentuk SVG dari lingkaran menjadi bintang mengikuti scroll"
           style={{
-            width: 'min(92vw, 640px)',
+            width: 'min(100%, 880px)',
             height: 'auto',
             overflow: 'visible',
           }}
         >
-          <g transform="translate(-26.4, 84.8) scale(0.42)" opacity="0.75">
+          <path
+            aria-hidden="true"
+            d="M 42 160 H 597 M 320 18 V 292"
+            fill="none"
+            stroke="#be85ad66"
+            strokeDasharray="3 6"
+          />
+          <g transform="translate(-26.4, 84.8) scale(0.42)">
             <path
               d={START_PATH}
-              fill="#f3d6e6"
-              stroke="#8f3465"
+              fill="#733963"
+              stroke="#d096c4"
               strokeWidth="6"
             />
           </g>
@@ -109,15 +134,15 @@ export default function SvgMorph() {
             x="108"
             y="246"
             textAnchor="middle"
-            fill="#70425b"
-            style={{ fontFamily: 'monospace', fontSize: 12 }}
+            fill="#edcce3"
+            style={{ fontFamily: 'monospace', fontSize: 24 }}
           >
-            AWAL: LINGKARAN
+            AWAL
           </text>
           <path
             d={END_PATH}
             fill="none"
-            stroke="#d7abc3"
+            stroke="#dca5d1"
             strokeWidth="3"
             strokeDasharray="7 7"
           />
@@ -125,16 +150,16 @@ export default function SvgMorph() {
             ref={path}
             data-testid="svg-morph-path"
             d={START_PATH}
-            fill="#d96b9e33"
-            stroke="#8f3465"
+            fill="#d090c9"
+            stroke="#f6bde5"
             strokeWidth="6"
             strokeLinejoin="round"
           />
-          <g transform="translate(397.6, 84.8) scale(0.42)" opacity="0.75">
+          <g transform="translate(397.6, 84.8) scale(0.42)">
             <path
               d={END_PATH}
-              fill="#f3d6e6"
-              stroke="#8f3465"
+              fill="#733963"
+              stroke="#d096c4"
               strokeWidth="6"
             />
           </g>
@@ -142,10 +167,10 @@ export default function SvgMorph() {
             x="532"
             y="246"
             textAnchor="middle"
-            fill="#70425b"
-            style={{ fontFamily: 'monospace', fontSize: 12 }}
+            fill="#edcce3"
+            style={{ fontFamily: 'monospace', fontSize: 24 }}
           >
-            AKHIR: BINTANG
+            AKHIR
           </text>
         </svg>
         <p
@@ -153,17 +178,28 @@ export default function SvgMorph() {
             position: 'absolute',
             bottom: 24,
             padding: '8px 16px',
-            background: '#fcf7fa',
-            border: '1px solid #e6cad9',
-            borderRadius: 8,
-            fontFamily: 'monospace',
+            maxWidth: 'calc(100% - 32px)',
+            margin: 0,
+            background: '#281728',
+            border: '1px solid #6b4564',
+            borderRadius: 6,
+            color: '#edcce3',
+            font: '0.8rem/1.5 monospace',
             textAlign: 'center',
           }}
         >
           attr.d: lingkaran (4 segmen C) → bintang
         </p>
       </div>
-      <footer style={{ padding: '80px 24px', textAlign: 'center' }}>
+      <footer
+        style={{
+          borderTop: '1px solid #6b4564',
+          padding: 'clamp(36px, 7vw, 80px) 24px',
+          textAlign: 'center',
+          color: '#edcce3',
+          lineHeight: 1.6,
+        }}
+      >
         <strong>Transformasi bentuk selesai.</strong>
         <p>
           Kedua path memiliki jumlah segmen kubik Bézier yang sepadan sehingga

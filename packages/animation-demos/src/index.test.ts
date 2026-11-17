@@ -2,14 +2,18 @@ import { describe, expect, it } from 'vitest';
 import { demoIds, demos } from './index';
 
 describe('animation demo registry', () => {
-  it.each(['horizontal-story', 'kinetic-type', 'flip-gallery'])(
-    'makes %s available as a demo with copyable source',
-    async (id) => {
-      expect(demoIds).toContain(id);
-      const demo = Object.entries(demos).find(([slug]) => slug === id)?.[1];
-      expect(await demo?.loadSource()).toContain('export default function');
-    },
-  );
+  it.each([
+    'horizontal-story',
+    'kinetic-type',
+    'flip-gallery',
+    'motion-path',
+    'magnetic-button',
+    'stagger-grid',
+  ])('makes %s available as a demo with copyable source', async (id) => {
+    expect(demoIds).toContain(id);
+    const demo = Object.entries(demos).find(([slug]) => slug === id)?.[1];
+    expect(await demo?.loadSource()).toContain('export default function');
+  });
 
   it('registers svg-draw and svg-morph with lazy component and source loader', () => {
     expect(demoIds).toContain('svg-draw');

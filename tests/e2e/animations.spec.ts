@@ -1,5 +1,84 @@
 import { test, expect } from '@playwright/test';
 
+test('motion path can be scrubbed with the keyboard in reduced motion', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/demo/motion-path');
+  const range = page.getByRole('slider', { name: 'Progres lintasan' });
+  const token = page.locator('[data-motion-path-token]');
+  await expect(range).toHaveValue('0');
+  const position = () =>
+    token.evaluate(
+      (element) =>
+        (element as SVGGraphicsElement).transform.baseVal.getItem(0).matrix.e,
+    );
+  const start = await position();
+  await range.press('End');
+  await expect(range).toHaveValue('100');
+  await expect.poll(position).toBeGreaterThan(start + 100);
+  await range.press('Home');
+  await expect(range).toHaveValue('0');
+  await expect.poll(position).toBeCloseTo(start, 0);
+});
+
+test('magnetic button moves for a fine pointer and remains operable in reduced motion', async ({
+  page,
+}, testInfo) => {
+  await page.goto('/demo/magnetic-button');
+  const button = page.getByRole('button', { name: 'Medan magnet' });
+  const surface = page.locator('[data-magnetic-surface]');
+  await expect(button).toHaveAttribute('aria-pressed', 'false');
+  if (testInfo.project.name === 'chromium') {
+    await button.hover({ position: { x: 18, y: 35 } });
+    await expect
+      .poll(() =>
+        surface.evaluate(
+          (el) => new DOMMatrix(getComputedStyle(el).transform).m41,
+        ),
+      )
+      .toBeLessThan(-1);
+    await button.press('Enter');
+    await expect(button).toHaveAttribute('aria-pressed', 'true');
+    await expect
+      .poll(() => surface.evaluate((el) => getComputedStyle(el).transform))
+      .toBe('none');
+    await button.press('Enter');
+    await expect(button).toHaveAttribute('aria-pressed', 'false');
+  }
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect
+    .poll(() => surface.evaluate((el) => getComputedStyle(el).transform))
+    .toBe('none');
+  await button.press('Enter');
+  await expect(button).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('staggered grid replays and restores the static artwork when motion changes', async ({
+  page,
+}) => {
+  await page.goto('/demo/stagger-grid');
+  const replay = page.getByRole('button', { name: 'Putar ulang' });
+  const tiles = page.locator('[data-stagger-tile]');
+  await expect(tiles).toHaveCount(6);
+  await expect(replay).toBeEnabled();
+  await replay.press('Enter');
+  await expect
+    .poll(() =>
+      tiles.last().evaluate((el) => Number(getComputedStyle(el).opacity)),
+    )
+    .toBeLessThan(1);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(replay).toBeDisabled();
+  await expect
+    .poll(() =>
+      tiles.evaluateAll((items) =>
+        items.every((item) => getComputedStyle(item).opacity === '1'),
+      ),
+    )
+    .toBe(true);
+});
+
 test('horizontal gallery follows scroll on wide screens and reflows with reduced motion', async ({
   page,
 }, testInfo) => {

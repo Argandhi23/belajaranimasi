@@ -56,22 +56,41 @@ export default function PinScrub() {
     <section
       ref={root}
       data-testid="demo-pin-scrub"
-      style={{ color: '#24232a', background: '#fafaf8' }}
+      style={{ color: '#faf0ff', background: '#211429' }}
     >
-      <header style={{ padding: '64px 24px', maxWidth: 760, margin: 'auto' }}>
-        <p style={{ fontFamily: 'monospace', color: '#6447b5' }}>
-          01 / PIN + SCRUB
-        </p>
-        <h2 style={{ fontSize: 'clamp(28px, 5vw, 48px)' }}>
+      <header
+        style={{
+          maxWidth: 1120,
+          margin: 'auto',
+          padding: 'clamp(26px, 4vw, 56px) clamp(20px, 5vw, 70px)',
+        }}
+      >
+        <h2
+          style={{
+            margin: '0 0 14px',
+            fontSize: 'clamp(1.8rem, 3.8vw, 3.6rem)',
+            fontWeight: 900,
+            letterSpacing: '-0.065em',
+            lineHeight: 1,
+            textWrap: 'balance',
+          }}
+        >
           Satu scroll. Tiga tahap.
         </h2>
-        <p>
-          Gulir ke bawah: kotak bergeser, berputar, lalu membesar. Gulir kembali
+        <p style={{ margin: '0 0 8px', maxWidth: '58ch', lineHeight: 1.6 }}>
+          Gulir untuk menggeser, memutar, dan memperbesar kotak. Gulir ke atas
           untuk membalik urutannya.
         </p>
-        <p>
-          Dengan pengurangan gerak aktif, kotak tetap diam dan halaman mengalir
-          biasa.
+        <p
+          style={{
+            margin: 0,
+            maxWidth: '58ch',
+            color: '#e7d0eb',
+            fontSize: '0.875rem',
+            lineHeight: 1.6,
+          }}
+        >
+          Jika pengurangan gerak aktif, kotak diam dan panggung tidak ditahan.
         </p>
       </header>
       <div
@@ -84,11 +103,41 @@ export default function PinScrub() {
           placeItems: 'center',
           position: 'relative',
           overflow: 'hidden',
-          backgroundImage:
-            'linear-gradient(#eae8ef 1px, transparent 1px), linear-gradient(90deg, #eae8ef 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
+          isolation: 'isolate',
+          borderTop: '1px solid #6a4775',
+          background:
+            'radial-gradient(ellipse at center, #492d52, transparent 66%), #281831',
         }}
       >
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            inset: '12% clamp(18px, 6vw, 76px)',
+            zIndex: -1,
+            background:
+              'linear-gradient(90deg, #dfb8ef55, #dfb8ef55) center / 100% 1px no-repeat, repeating-linear-gradient(#dfb8ef88 0 1px, transparent 1px 18px) left center / 14px 100% no-repeat, repeating-linear-gradient(#dfb8ef88 0 1px, transparent 1px 18px) right center / 14px 100% no-repeat',
+          }}
+        />
+        {['clamp(-240px, -25vw, -75px)', 'clamp(75px, 25vw, 240px)'].map(
+          (offset) => (
+            <div
+              key={offset}
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                width: 100,
+                height: 100,
+                translate: offset,
+                border: '1px solid #d8a4ea99',
+                borderRadius: 12,
+                background:
+                  'repeating-linear-gradient(135deg, #d8a4ea22 0 1px, transparent 1px 8px)',
+                zIndex: -1,
+              }}
+            />
+          ),
+        )}
         <div
           ref={square}
           data-testid="pin-square"
@@ -97,8 +146,9 @@ export default function PinScrub() {
             width: 100,
             height: 100,
             borderRadius: 12,
-            background: '#7954d3',
-            boxShadow: '0 12px 32px #7954d322',
+            background: 'linear-gradient(135deg, #f1cef9, #c489db)',
+            border: '1px solid #fae3ff',
+            boxShadow: '0 12px 44px #13091b66',
           }}
         />
         <p
@@ -106,15 +156,27 @@ export default function PinScrub() {
             position: 'absolute',
             bottom: 24,
             padding: '8px 16px',
-            background: '#fafaf8',
-            fontFamily: 'monospace',
+            margin: 0,
+            background: '#211429',
+            border: '1px solid #6a4775',
+            borderRadius: 6,
+            color: '#e7d0eb',
+            font: '0.8rem/1.5 monospace',
             textAlign: 'center',
           }}
         >
           01 geser → 02 putar → 03 perbesar
         </p>
       </div>
-      <footer style={{ padding: '80px 24px', textAlign: 'center' }}>
+      <footer
+        style={{
+          borderTop: '1px solid #6a4775',
+          padding: 'clamp(36px, 7vw, 80px) 24px',
+          textAlign: 'center',
+          color: '#e7d0eb',
+          lineHeight: 1.6,
+        }}
+      >
         <strong>Timeline selesai.</strong>
         <p>
           Pin menahan panggung; scrub menghubungkan posisi scroll dengan progres
