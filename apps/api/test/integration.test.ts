@@ -55,7 +55,7 @@ test('published list, pagination, detail and taxonomy', async () => {
   const page = await fetch(base + '/api/animations?limit=2').then((r) =>
     r.json(),
   );
-  assert.equal(page.total, 5);
+  assert.equal(page.total, 8);
   assert.equal(page.items.length, 2);
   const next = await fetch(base + '/api/animations?limit=2&page=2').then((r) =>
     r.json(),
@@ -103,7 +103,7 @@ test('natural language synonyms and combined filters', async () => {
   const stop = await fetch(base + '/api/animations?q=yang%20dan%20di').then(
     (r) => r.json(),
   );
-  assert.equal(stop.total, 5);
+  assert.equal(stop.total, 8);
   const filtered = await fetch(
     base + '/api/animations?category=pinning&difficulty=INTERMEDIATE',
   ).then((r) => r.json());

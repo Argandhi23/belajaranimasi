@@ -7,6 +7,16 @@ const PREVIEW_MORPH_START =
   'M 60 16 C 84 16, 104 36, 104 60 C 104 84, 84 104, 60 104 C 36 104, 16 84, 16 60 C 16 36, 36 16, 60 16 Z';
 const PREVIEW_MORPH_END =
   'M 60 8 C 68 42, 78 52, 112 60 C 78 68, 68 78, 60 112 C 52 78, 42 68, 8 60 C 42 52, 52 42, 60 8 Z';
+const previewLabels: Record<string, string> = {
+  'pin-scrub': '01 / SCROLL',
+  'depth-parallax': '02 / DEPTH',
+  'scroll-cube': '03 / WEBGL',
+  'svg-draw': '04 / VECTOR',
+  'svg-morph': '05 / MORPH',
+  'horizontal-story': 'HORIZONTAL',
+  'kinetic-type': 'TIPOGRAFI',
+  'flip-gallery': 'FLIP',
+};
 export function Preview({ id }: { id: string }) {
   const root = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -43,6 +53,18 @@ export function Preview({ id }: { id: string }) {
               { attr: { d: PREVIEW_MORPH_END } },
               0,
             );
+          else if (id === 'horizontal-story')
+            timeline.to('.preview-posters', { x: -42 });
+          else if (id === 'kinetic-type')
+            timeline.from('.preview-type span', {
+              yPercent: 110,
+              stagger: 0.12,
+            });
+          else if (id === 'flip-gallery')
+            timeline.to('.preview-tiles i', {
+              x: (index) => [34, 0, -34][index],
+              y: (index) => [-34, 0, 34][index],
+            });
           else
             timeline.to('.preview-shape', {
               rotation: id === 'scroll-cube' ? 110 : 180,
@@ -73,17 +95,7 @@ export function Preview({ id }: { id: string }) {
   );
   return (
     <div ref={root} className={`preview preview-${id}`}>
-      <span className="preview-index">
-        {id === 'pin-scrub'
-          ? '01 / SCROLL'
-          : id === 'depth-parallax'
-            ? '02 / DEPTH'
-            : id === 'scroll-cube'
-              ? '03 / WEBGL'
-              : id === 'svg-draw'
-                ? '04 / VECTOR'
-                : '05 / MORPH'}
-      </span>
+      <span className="preview-index">{previewLabels[id]}</span>
       <div className="preview-art" aria-hidden="true">
         {id === 'depth-parallax' ? (
           <>
@@ -142,6 +154,22 @@ export function Preview({ id }: { id: string }) {
               strokeLinejoin="round"
             />
           </svg>
+        ) : id === 'horizontal-story' ? (
+          <div className="preview-posters">
+            <i />
+            <i />
+            <i />
+          </div>
+        ) : id === 'kinetic-type' ? (
+          <div className="preview-type">
+            <span>Huruf</span> <span>ikut</span>
+          </div>
+        ) : id === 'flip-gallery' ? (
+          <div className="preview-tiles">
+            <i />
+            <i />
+            <i />
+          </div>
         ) : (
           <i className="preview-shape preview-square">
             <span />

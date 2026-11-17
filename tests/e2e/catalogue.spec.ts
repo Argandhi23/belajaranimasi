@@ -1,4 +1,21 @@
 import { test, expect } from '@playwright/test';
+
+test('the new motion studies can be found in the catalogue', async ({
+  page,
+}) => {
+  await page.goto('/');
+  for (const name of [
+    'Horizontal Scroll Gallery',
+    'Kinetic Typography Reveal',
+    'FLIP Gallery Layout',
+  ]) {
+    await expect(page.getByRole('link', { name, exact: true })).toBeVisible();
+  }
+  await page.getByRole('button', { name: 'Horizontal storytelling' }).click();
+  await expect(page.getByRole('article')).toHaveCount(1);
+  await page.getByRole('link', { name: 'Horizontal Scroll Gallery' }).click();
+  await expect(page.getByRole('button', { name: 'Copy Code' })).toBeVisible();
+});
 test('keyboard navigation exposes a working skip link and search', async ({
   page,
 }) => {
@@ -16,8 +33,8 @@ test('keyboard navigation exposes a working skip link and search', async ({
 });
 test('catalogue discovery, filters, theme and navigation', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('article')).toHaveCount(5);
-  await expect(page.locator('#catalogue-heading')).toContainText('01—05');
+  await expect(page.getByRole('article')).toHaveCount(8);
+  await expect(page.locator('#catalogue-heading')).toContainText('01—08');
   await page
     .getByRole('textbox', { name: 'Cari teknik atau deskripsikan gerakan' })
     .fill(
@@ -26,17 +43,17 @@ test('catalogue discovery, filters, theme and navigation', async ({ page }) => {
   await page.getByRole('button', { name: 'Cari', exact: true }).click();
   await expect(page.getByRole('article')).toHaveCount(1);
   await expect(page.getByRole('article')).toContainText('Pin & Scrub');
-  await expect(page.locator('#catalogue-heading')).toContainText('01—05');
+  await expect(page.locator('#catalogue-heading')).toContainText('01—08');
   await page.getByRole('button', { name: 'Hapus pencarian' }).click();
   await page.getByLabel('Tingkat kesulitan').selectOption('BEGINNER');
   await expect(page.getByRole('article')).toHaveCount(1);
   await expect(page.getByRole('article')).toContainText(
     'Scroll-linked SVG Stroke Draw',
   );
-  await expect(page.locator('#catalogue-heading')).toContainText('01—05');
+  await expect(page.locator('#catalogue-heading')).toContainText('01—08');
   await page.getByLabel('Tingkat kesulitan').selectOption('ADVANCED');
   await expect(page.getByRole('article')).toHaveCount(1);
-  await expect(page.locator('#catalogue-heading')).toContainText('01—05');
+  await expect(page.locator('#catalogue-heading')).toContainText('01—08');
   await page
     .getByRole('link', { name: /Scroll-controlled 3D Rotation/ })
     .click();
@@ -47,7 +64,7 @@ test('catalogue discovery, filters, theme and navigation', async ({ page }) => {
     }),
   ).toBeVisible();
   await page.getByRole('link', { name: 'Semua animasi', exact: true }).click();
-  await expect(page.getByRole('article')).toHaveCount(5);
+  await expect(page.getByRole('article')).toHaveCount(8);
   await page.getByRole('button', { name: 'Aktifkan tema gelap' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.reload();
@@ -85,9 +102,9 @@ test('empty, not found and service unavailable states remain actionable', async 
 }) => {
   await page.goto('/?q=zzzznomatch');
   await expect(page.getByText('Belum ada gerakan yang cocok')).toBeVisible();
-  await expect(page.locator('#catalogue-heading')).toContainText('01—05');
+  await expect(page.locator('#catalogue-heading')).toContainText('01—08');
   await page.getByRole('button', { name: 'Reset filter' }).click();
-  await expect(page.getByRole('article')).toHaveCount(5);
+  await expect(page.getByRole('article')).toHaveCount(8);
   await page.goto('/animasi/not-found');
   await expect(
     page.getByRole('heading', { name: 'Animasi tidak ditemukan' }),

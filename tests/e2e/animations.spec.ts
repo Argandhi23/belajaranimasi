@@ -1,4 +1,100 @@
 import { test, expect } from '@playwright/test';
+
+test('horizontal gallery follows scroll on wide screens and reflows with reduced motion', async ({
+  page,
+}, testInfo) => {
+  await page.goto('/demo/horizontal-story');
+  const track = page.getByTestId('horizontal-track');
+  const panels = track.getByRole('listitem');
+  await expect(panels).toHaveCount(3);
+  const pin = page.locator('.pin-spacer');
+  if (testInfo.project.name === 'chromium') {
+    const offset = () =>
+      track.evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).m41);
+    await expect(pin).toHaveCount(1);
+    await pin.evaluate((el) =>
+      window.scrollTo(
+        0,
+        el.getBoundingClientRect().top + scrollY + el.clientHeight * 0.65,
+      ),
+    );
+    await expect.poll(offset).toBeLessThan(-100);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect.poll(offset).toBe(0);
+    await page.setViewportSize({ width: 768, height: 850 });
+    await expect(pin).toHaveCount(0);
+    await page.setViewportSize({ width: 1280, height: 850 });
+    await expect(pin).toHaveCount(1);
+  } else {
+    await expect(pin).toHaveCount(0);
+  }
+  await page.getByRole('link', { name: 'Belajar Animasi, beranda' }).click();
+  await expect(pin).toHaveCount(0);
+  await page.getByRole('link', { name: 'Horizontal Scroll Gallery' }).click();
+  await expect(panels).toHaveCount(3);
+  await expect(pin).toHaveCount(testInfo.project.name === 'chromium' ? 1 : 0);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(pin).toHaveCount(0);
+  await expect
+    .poll(
+      async () =>
+        (await panels.last().boundingBox())!.y -
+        (await panels.first().boundingBox())!.y,
+    )
+    .toBeGreaterThan(0);
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await expect(pin).toHaveCount(testInfo.project.name === 'chromium' ? 1 : 0);
+});
+
+test('kinetic title plays and restores all text when motion is reduced', async ({
+  page,
+}) => {
+  await page.goto('/demo/kinetic-type');
+  const heading = page.getByRole('heading', { name: 'Huruf ikut bergerak' });
+  const replay = page.getByRole('button', { name: 'Putar ulang' });
+  await expect(heading).toBeVisible();
+  await expect(heading).toHaveText('Huruf ikut bergerak');
+  const word = heading.getByText('Huruf', { exact: true });
+  await replay.focus();
+  await page.keyboard.press('Enter');
+  await expect
+    .poll(() => word.evaluate((el) => getComputedStyle(el).transform))
+    .not.toBe('none');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(replay).toBeHidden();
+  await expect(heading).toBeVisible();
+  await expect
+    .poll(() => word.evaluate((el) => getComputedStyle(el).transform))
+    .toBe('none');
+});
+
+test('FLIP changes layout with the keyboard and works with reduced motion', async ({
+  page,
+}) => {
+  await page.goto('/demo/flip-gallery');
+  const grid = page.getByRole('button', { name: 'Grid', exact: true });
+  const list = page.getByRole('button', { name: 'Daftar', exact: true });
+  const gallery = page.getByRole('list', { name: 'Galeri bentuk' });
+  const secondCard = gallery.getByRole('listitem').nth(1);
+  await expect(grid).toHaveAttribute('aria-pressed', 'true');
+  const start = (await secondCard.boundingBox())!;
+  await list.focus();
+  await page.keyboard.press('Enter');
+  await expect(list).toHaveAttribute('aria-pressed', 'true');
+  await expect
+    .poll(() => secondCard.evaluate((el) => getComputedStyle(el).transform))
+    .not.toBe('none');
+  await expect
+    .poll(async () => (await secondCard.boundingBox())!.x)
+    .toBeLessThan(start.x - 20);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await grid.click();
+  await expect(grid).toHaveAttribute('aria-pressed', 'true');
+  expect(
+    await secondCard.evaluate((el) => getComputedStyle(el).transform),
+  ).toBe('none');
+  expect((await secondCard.boundingBox())!.x).toBeCloseTo(start.x, 0);
+});
 test('actual WebGL canvas survives StrictMode and rotates on scroll', async ({
   page,
 }) => {

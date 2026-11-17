@@ -78,7 +78,7 @@ export function Detail({ fullscreen = false }: { fullscreen?: boolean }) {
         <div className="detail-actions">
           {fullscreen ? (
             <a className="button primary" href="#demo">
-              Mulai scroll <MoveDown size={16} />
+              Lihat demo <MoveDown size={16} />
             </a>
           ) : (
             <Link className="button primary" to={`/demo/${slug}`}>

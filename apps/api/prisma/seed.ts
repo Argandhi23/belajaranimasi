@@ -189,6 +189,79 @@ const records = [
     aiPrompt:
       'Buat komponen React TypeScript untuk demo SVG Morph yang mengubah bentuk lingkaran menjadi bintang empat sudut mengikuti progres scroll. Buat panggung setinggi 100svh, minimal 520 px, berisi SVG viewBox 0 0 640 320 dengan siluet pembanding bentuk awal di kiri, siluet bentuk akhir di kanan, kontur tujuan di tengah, dan path utama yang dianimasikan. Gunakan dua string path dengan empat segmen kubik Bézier (M dan 4 perintah C lalu Z) yang memiliki jumlah titik sepadan. Gunakan useGSAP dengan scoped ref untuk menganimasikan attr.d dari path awal ke path akhir dengan ease none, ScrollTrigger start top 65%, end bottom 35%, scrub true, dan invalidateOnRefresh true. Refresh setelah font siap. Gunakan gsap.matchMedia untuk prefers-reduced-motion agar perbandingan bentuk statis tetap jelas ketika gerak dikurangi, serta bersihkan trigger saat unmount.',
   },
+  {
+    slug: 'horizontal-story',
+    technicalName: 'Horizontal Scroll Gallery',
+    indonesianName: 'Galeri mendatar mengikuti gulir vertikal',
+    shortDescription:
+      'Susuri tiga poster geometris yang bergeser mendatar saat halaman digulir.',
+    explanation:
+      'ScrollTrigger menahan panggung dengan pin, lalu menghubungkan perpindahan horizontal jalur galeri dengan gulir vertikal lewat scrub. Jarak tempuh berasal dari selisih lebar konten dan lebar panggung, sehingga panel terakhir berhenti sejajar dengan tepi layar.\n\nGunakan teknik ini untuk menyusun seri karya atau cerita visual. Pada layar kecil dan saat prefers-reduced-motion aktif, ketiga poster tersusun vertikal dan tetap terbaca dalam alur halaman.',
+    difficulty: 'INTERMEDIATE' as const,
+    category: 'horizontal',
+    keywords: [
+      'horizontal',
+      'mendatar',
+      'poster',
+      'panel',
+      'galeri',
+      'storytelling',
+    ],
+    libraries: ['GSAP', 'ScrollTrigger', 'React'],
+    tags: ['scroll', 'horizontal', 'pin'],
+    aiPrompt:
+      'Buat demo React TypeScript yang menampilkan tiga poster dalam urutan vertikal. Gunakan useGSAP dan gsap.matchMedia untuk membuat jalur flex mendatar hanya pada layar lebar dengan tinggi memadai dan prefers-reduced-motion: no-preference. Hubungkan tween linear ke ScrollTrigger dengan pin, scrub, dan invalidateOnRefresh. Hitung jarak tempuh dari scrollWidth jalur dikurangi clientWidth panggung. Refresh setelah font siap dan kembalikan gaya serta pin saat preferensi, ukuran layar, atau rute berubah.',
+  },
+  {
+    slug: 'kinetic-type',
+    technicalName: 'Kinetic Typography Reveal',
+    indonesianName: 'Judul muncul kata demi kata',
+    shortDescription:
+      'Mainkan kembali judul tebal yang muncul bertahap dari balik masker.',
+    explanation:
+      'Setiap kata berada dalam baris yang memotong bagian visual di luar batasnya. GSAP menggerakkan kata dari bawah dengan sedikit rotasi. Stagger memberi jeda antarkata, lalu label timeline menempatkan gerak garis aksen tepat setelah teks mulai muncul.\n\nTeks tampil lengkap saat panggung dimuat. Tombol putar ulang menjalankan timeline dari awal, dan heading memiliki satu nama yang dapat dibaca pembaca layar. Dengan pengurangan gerak aktif, judul tetap lengkap dan tombol animasi disembunyikan.',
+    difficulty: 'INTERMEDIATE' as const,
+    category: 'typography',
+    keywords: [
+      'kinetik',
+      'tipografi',
+      'teks',
+      'judul',
+      'kata',
+      'mask',
+      'reveal',
+      'stagger',
+      'replay',
+    ],
+    libraries: ['GSAP', 'React'],
+    tags: ['typography', 'timeline', 'stagger'],
+    aiPrompt:
+      'Buat panggung tipografi React TypeScript dengan heading dua baris yang dapat dibaca sebagai satu frasa. Masker setiap baris dengan overflow: clip, lalu buat timeline GSAP terjeda di useGSAP dengan label reveal dan accent. Animasikan tiap kata dari yPercent 120 dan rotasi kecil memakai stagger, lalu animasikan garis aksen dengan scaleX. Biarkan judul utuh saat dimuat. Sediakan tombol native untuk restart dan gunakan gsap.matchMedia agar teks utuh saat gerak dikurangi.',
+  },
+  {
+    slug: 'flip-gallery',
+    technicalName: 'FLIP Gallery Layout',
+    indonesianName: 'Kartu berpindah dari grid ke daftar',
+    shortDescription:
+      'Ganti tata letak galeri dan ikuti perpindahan setiap kartu di antara dua susunan.',
+    explanation:
+      'FLIP adalah singkatan dari First, Last, Invert, Play. Ambil posisi dan ukuran elemen dengan Flip.getState sebelum mengubah layout. Setelah React menerapkan susunan baru, Flip.from memasang transform yang membuat kartu seolah masih berada di posisi lama, lalu menganimasikannya ke posisi baru.\n\nKedua tombol dapat digunakan dengan keyboard dan aria-pressed menandai pilihan aktif. Pengguna yang mengurangi gerak tetap dapat berganti tata letak secara langsung.',
+    difficulty: 'INTERMEDIATE' as const,
+    category: 'flip',
+    keywords: [
+      'layout',
+      'tata letak',
+      'grid',
+      'daftar',
+      'kartu',
+      'galeri',
+      'flip',
+    ],
+    libraries: ['GSAP', 'Flip', 'React'],
+    tags: ['flip', 'layout', 'interaction'],
+    aiPrompt:
+      'Buat galeri React TypeScript berisi tiga kartu dengan pilihan Grid dan Daftar. Sebelum mengubah state layout, simpan posisi dan ukuran kartu memakai Flip.getState. Setelah DOM diperbarui, jalankan Flip.from dengan scale dan easing power3.inOut di useGSAP. Beri tombol aria-pressed, hormati prefers-reduced-motion, dan bersihkan animasi milik galeri ketika preferensi berubah atau komponen unmount.',
+  },
 ];
 export async function seed(prisma: PrismaClient) {
   await prisma.$transaction(
