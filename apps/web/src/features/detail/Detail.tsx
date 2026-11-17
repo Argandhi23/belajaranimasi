@@ -78,7 +78,7 @@ export function Detail({ fullscreen = false }: { fullscreen?: boolean }) {
         <div className="detail-actions">
           {fullscreen ? (
             <a className="button primary" href="#demo">
-              Mulai scroll <MoveDown size={16} />
+              Lihat demo <MoveDown size={16} />
             </a>
           ) : (
             <Link className="button primary" to={`/demo/${slug}`}>
@@ -93,7 +93,11 @@ export function Detail({ fullscreen = false }: { fullscreen?: boolean }) {
       <section
         id="demo"
         aria-label={`Demo ${animation.technicalName}`}
-        className="live-demo"
+        className={
+          fullscreen
+            ? 'live-demo live-demo--fullscreen'
+            : 'page-width live-demo'
+        }
       >
         <Suspense fallback={<Loading />}>
           {Demo ? (
@@ -106,7 +110,6 @@ export function Detail({ fullscreen = false }: { fullscreen?: boolean }) {
       <div className="page-width detail-content" id="penjelasan">
         <section className="explanation">
           <div>
-            <span className="mono">MEMAHAMI GERAK</span>
             <h2>{animation.indonesianName}</h2>
             {animation.explanation
               .split('\n')
@@ -131,30 +134,31 @@ export function Detail({ fullscreen = false }: { fullscreen?: boolean }) {
             </p>
           </aside>
         </section>
-        <section className="prompt-section">
-          <div className="section-title">
-            <h2>Bangun versimu dengan AI</h2>
-            <CopyButton text={animation.aiPrompt} label="Copy AI Prompt" />
+        <section className="lesson-tools" aria-label="Materi praktik">
+          <div className="lesson-source">
+            {!Demo ? (
+              <p>Kode untuk demo ini belum tersedia.</p>
+            ) : source ? (
+              <CodePanel source={source} usesThree={demoId === 'scroll-cube'} />
+            ) : sourceError ? (
+              <p role="alert">
+                Kode belum dapat dimuat. Muat ulang halaman untuk mencoba lagi.
+              </p>
+            ) : (
+              <p role="status">Memuat source demo…</p>
+            )}
           </div>
-          <p>
-            Salin instruksi ini ke asisten coding pilihanmu. Tidak ada
-            permintaan AI yang dijalankan oleh situs ini.
-          </p>
-          <pre className="prompt-text" tabIndex={0}>
-            {animation.aiPrompt}
-          </pre>
+          <section className="prompt-section" aria-labelledby="prompt-title">
+            <div className="section-title">
+              <h2 id="prompt-title">Prompt AI</h2>
+              <CopyButton text={animation.aiPrompt} label="Copy AI Prompt" />
+            </div>
+            <p>Salin instruksi ini ke asisten coding pilihanmu.</p>
+            <pre className="prompt-text" tabIndex={0}>
+              {animation.aiPrompt}
+            </pre>
+          </section>
         </section>
-        {!Demo ? (
-          <p>Kode untuk demo ini belum tersedia.</p>
-        ) : source ? (
-          <CodePanel source={source} />
-        ) : sourceError ? (
-          <p role="alert">
-            Kode belum dapat dimuat. Muat ulang halaman untuk mencoba lagi.
-          </p>
-        ) : (
-          <p role="status">Memuat source demo…</p>
-        )}
         <Link className="back-link" to="/">
           <ArrowLeft size={16} />
           Jelajahi animasi lainnya

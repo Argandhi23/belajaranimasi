@@ -51,7 +51,7 @@ const records = [
     libraries: ['GSAP', 'ScrollTrigger', 'React'],
     tags: ['scroll', 'pin', 'scrub'],
     aiPrompt:
-      'Buat komponen React TypeScript yang menjelaskan pin dan scrub GSAP ScrollTrigger. Buat kotak 100 � 100 px pada panggung setinggi 85svh, minimal 360 px. Gunakan useGSAP dengan scoped ref dan timeline ease none berlabel translate, rotate, scale, masing-masing durasi 1: geser X ke min(240 px, 25% lebar panggung), putar ke 180 derajat, lalu skala ke 1.5 sambil X kembali ke 0. ScrollTrigger mulai top top, berakhir setelah 2 � tinggi viewport, pin true, pinSpacing true, scrub true, invalidateOnRefresh true. Refresh setelah font siap. Bersihkan saat unmount dan gunakan gsap.matchMedia untuk prefers-reduced-motion. Mode tanpa gerak harus memakai alur dokumen biasa. Jangan menjalankan kode dari input pengguna.',
+      'Buat komponen React TypeScript yang menjelaskan pin dan scrub GSAP ScrollTrigger. Buat kotak 100 × 100 px pada panggung setinggi 85svh, minimal 360 px. Gunakan useGSAP dengan scoped ref dan timeline ease none berlabel translate, rotate, scale, masing-masing durasi 1: geser X ke min(240 px, 25% lebar panggung), putar ke 180 derajat, lalu skala ke 1.5 sambil X kembali ke 0. ScrollTrigger mulai top top, berakhir setelah 2 kali tinggi viewport, pin true, pinSpacing true, scrub true, invalidateOnRefresh true. Refresh setelah font siap. Bersihkan saat unmount dan gunakan gsap.matchMedia untuk prefers-reduced-motion. Mode tanpa gerak harus memakai alur dokumen biasa. Jangan menjalankan kode dari input pengguna.',
   },
   {
     slug: 'depth-parallax',
@@ -114,7 +114,7 @@ const records = [
     libraries: ['React Three Fiber', 'Three.js', 'GSAP', 'ScrollTrigger'],
     tags: ['scroll', '3d', 'webgl'],
     aiPrompt:
-      'Buat demo React Three Fiber TypeScript berupa kubus yang berputar mengikuti progres scroll. Gunakan boxGeometry 1.7 � 1.7 � 1.7, rotasi awal [0.35, 0.5, 0], kamera tetap [0, 0, 5] dengan fov 45, ambientLight 1.5 dan directionalLight 3. Track 240svh dan panggung sticky 85svh, minimal 400 px. GSAP mengubah rotation.x ke Math.PI � 1.3 dan rotation.y ke Math.PI � 2.25 dengan ease none; ScrollTrigger start top top, end bottom bottom, scrub true. Lazy-load scene, gunakan demand rendering dan DPR maksimal 1.5, serta satu pemilik rotasi. Invalidate hanya saat scroll mengubah rotasi dan canvas terlihat di tab aktif; hentikan observer dan listener saat unmount. Sediakan fallback jika WebGL tidak tersedia atau konteks hilang, reduced motion statis, dan cleanup resource serta listener saat unmount.',
+      'Buat demo React Three Fiber TypeScript berupa kubus yang berputar mengikuti progres scroll. Gunakan boxGeometry 1.7 × 1.7 × 1.7, rotasi awal [0.35, 0.5, 0], kamera tetap [0, 0, 5] dengan fov 45, ambientLight 1.5 dan directionalLight 3. Track 240svh dan panggung sticky 85svh, minimal 400 px. GSAP mengubah rotation.x ke Math.PI * 1.3 dan rotation.y ke Math.PI * 2.25 dengan ease none; ScrollTrigger start top top, end bottom bottom, scrub true. Lazy-load scene, gunakan demand rendering dan DPR maksimal 1.5, serta satu pemilik rotasi. Invalidate hanya saat scroll mengubah rotasi dan canvas terlihat di tab aktif; hentikan observer dan listener saat unmount. Sediakan fallback jika WebGL tidak tersedia atau konteks hilang, reduced motion statis, dan cleanup resource serta listener saat unmount.',
   },
   {
     slug: 'svg-draw',
@@ -151,6 +151,188 @@ const records = [
     tags: ['scroll', 'svg', 'draw'],
     aiPrompt:
       'Buat komponen React TypeScript untuk demo SVG Draw yang menggambar jalur vektor mengikuti progres scroll. Buat panggung setinggi 110svh, minimal 560 px, berisi SVG viewBox 0 0 600 260 dengan jalur petunjuk tipis dan jalur utama melengkung. Gunakan useGSAP dengan scoped ref, hitung panjang kurva memakai getTotalLength(), lalu animasikan strokeDasharray dan strokeDashoffset dari panjang penuh ke 0 dengan ease none. Hubungkan ke ScrollTrigger pada panggung dengan start top 65%, end bottom 35%, scrub true, dan invalidateOnRefresh true. Refresh setelah font siap. Gunakan gsap.matchMedia untuk prefers-reduced-motion agar gambar SVG tampil lengkap secara statis ketika gerak dikurangi, serta bersihkan semua trigger saat unmount.',
+  },
+  {
+    slug: 'svg-morph',
+    technicalName: 'Scroll-linked SVG Shape Morph',
+    indonesianName: 'Bentuk SVG berubah mengikuti scroll',
+    shortDescription:
+      'Ubah satu bentuk vektor menjadi bentuk lain secara mulus mengikuti progres scroll.',
+    explanation:
+      'Teknik SVG morphing mengubah satu bentuk vektor menjadi bentuk lain dengan menginterpolasi atribut d pada elemen path. Ketika bentuk awal dan bentuk akhir disusun dengan urutan perintah kurva kubik Bézier (M, C, Z) dan jumlah titik kontrol yang sepadan, setiap pasangan koordinat dapat bergeser secara presisi dari posisi asal ke posisi tujuan.\n\nDengan menghubungkan perubahan atribut d ke GSAP ScrollTrigger melalui scrub, transisi bentuk berlangsung seiring jarak gulir pengguna. Pendekatan ini berguna untuk menceritakan perubahan status, evolusi ikon, atau ilustrasi konsep yang bertransformasi secara bertahap.\n\nPada contoh ini, lingkaran empat segmen berubah menjadi bintang empat sudut sambil menampilkan siluet awal dan akhir sebagai pembanding. Saat preferensi reduced motion aktif, animasi atribut d dimatikan dan kedua bentuk pembanding tetap tampil statis sehingga transformasi tetap dapat dipahami tanpa gerak.',
+    difficulty: 'INTERMEDIATE' as const,
+    category: 'svg-morph',
+    keywords: [
+      'svg',
+      'morph',
+      'morphing',
+      'bentuk',
+      'berubah',
+      'perubahan',
+      'transformasi',
+      'transisi',
+      'wujud',
+      'lingkaran',
+      'bintang',
+      'siluet',
+      'path',
+      'vektor',
+      'kurva',
+      'bezier',
+      'mengikuti',
+      'scroll',
+      'gulir',
+      'menggulir',
+    ],
+    libraries: ['GSAP', 'ScrollTrigger', 'React'],
+    tags: ['scroll', 'svg', 'morph'],
+    aiPrompt:
+      'Buat komponen React TypeScript untuk demo SVG Morph yang mengubah bentuk lingkaran menjadi bintang empat sudut mengikuti progres scroll. Buat panggung setinggi 100svh, minimal 520 px, berisi SVG viewBox 0 0 640 320 dengan siluet pembanding bentuk awal di kiri, siluet bentuk akhir di kanan, kontur tujuan di tengah, dan path utama yang dianimasikan. Gunakan dua string path dengan empat segmen kubik Bézier (M dan 4 perintah C lalu Z) yang memiliki jumlah titik sepadan. Gunakan useGSAP dengan scoped ref untuk menganimasikan attr.d dari path awal ke path akhir dengan ease none, ScrollTrigger start top 65%, end bottom 35%, scrub true, dan invalidateOnRefresh true. Refresh setelah font siap. Gunakan gsap.matchMedia untuk prefers-reduced-motion agar perbandingan bentuk statis tetap jelas ketika gerak dikurangi, serta bersihkan trigger saat unmount.',
+  },
+  {
+    slug: 'horizontal-story',
+    technicalName: 'Horizontal Scroll Gallery',
+    indonesianName: 'Galeri mendatar mengikuti gulir vertikal',
+    shortDescription:
+      'Susuri tiga poster geometris yang bergeser mendatar saat halaman digulir.',
+    explanation:
+      'ScrollTrigger menahan panggung dengan pin, lalu menghubungkan perpindahan horizontal jalur galeri dengan gulir vertikal lewat scrub. Jarak tempuh berasal dari selisih lebar konten dan lebar panggung, sehingga panel terakhir berhenti sejajar dengan tepi layar.\n\nGunakan teknik ini untuk menyusun seri karya atau cerita visual. Pada layar kecil dan saat prefers-reduced-motion aktif, ketiga poster tersusun vertikal dan tetap terbaca dalam alur halaman.',
+    difficulty: 'INTERMEDIATE' as const,
+    category: 'horizontal',
+    keywords: [
+      'horizontal',
+      'mendatar',
+      'poster',
+      'panel',
+      'galeri',
+      'storytelling',
+    ],
+    libraries: ['GSAP', 'ScrollTrigger', 'React'],
+    tags: ['scroll', 'horizontal', 'pin'],
+    aiPrompt:
+      'Buat demo React TypeScript yang menampilkan tiga poster dalam urutan vertikal. Gunakan useGSAP dan gsap.matchMedia untuk membuat jalur flex mendatar hanya pada layar lebar dengan tinggi memadai dan prefers-reduced-motion: no-preference. Hubungkan tween linear ke ScrollTrigger dengan pin, scrub, dan invalidateOnRefresh. Hitung jarak tempuh dari scrollWidth jalur dikurangi clientWidth panggung. Refresh setelah font siap dan kembalikan gaya serta pin saat preferensi, ukuran layar, atau rute berubah.',
+  },
+  {
+    slug: 'kinetic-type',
+    technicalName: 'Kinetic Typography Reveal',
+    indonesianName: 'Judul muncul kata demi kata',
+    shortDescription:
+      'Mainkan kembali judul tebal yang muncul bertahap dari balik masker.',
+    explanation:
+      'Setiap kata berada dalam baris yang memotong bagian visual di luar batasnya. GSAP menggerakkan kata dari bawah dengan sedikit rotasi. Stagger memberi jeda antarkata, lalu label timeline menempatkan gerak garis aksen tepat setelah teks mulai muncul.\n\nTeks tampil lengkap saat panggung dimuat. Tombol putar ulang menjalankan timeline dari awal, dan heading memiliki satu nama yang dapat dibaca pembaca layar. Dengan pengurangan gerak aktif, judul tetap lengkap dan tombol animasi disembunyikan.',
+    difficulty: 'INTERMEDIATE' as const,
+    category: 'typography',
+    keywords: [
+      'kinetik',
+      'tipografi',
+      'teks',
+      'judul',
+      'kata',
+      'mask',
+      'reveal',
+      'stagger',
+      'replay',
+    ],
+    libraries: ['GSAP', 'React'],
+    tags: ['typography', 'timeline', 'stagger'],
+    aiPrompt:
+      'Buat panggung tipografi React TypeScript dengan heading dua baris yang dapat dibaca sebagai satu frasa. Masker setiap baris dengan overflow: clip, lalu buat timeline GSAP terjeda di useGSAP dengan label reveal dan accent. Animasikan tiap kata dari yPercent 120 dan rotasi kecil memakai stagger, lalu animasikan garis aksen dengan scaleX. Biarkan judul utuh saat dimuat. Sediakan tombol native untuk restart dan gunakan gsap.matchMedia agar teks utuh saat gerak dikurangi.',
+  },
+  {
+    slug: 'flip-gallery',
+    technicalName: 'FLIP Gallery Layout',
+    indonesianName: 'Kartu berpindah dari grid ke daftar',
+    shortDescription:
+      'Ganti tata letak galeri dan ikuti perpindahan setiap kartu di antara dua susunan.',
+    explanation:
+      'FLIP adalah singkatan dari First, Last, Invert, Play. Ambil posisi dan ukuran elemen dengan Flip.getState sebelum mengubah layout. Setelah React menerapkan susunan baru, Flip.from memasang transform yang membuat kartu seolah masih berada di posisi lama, lalu menganimasikannya ke posisi baru.\n\nKedua tombol dapat digunakan dengan keyboard dan aria-pressed menandai pilihan aktif. Pengguna yang mengurangi gerak tetap dapat berganti tata letak secara langsung.',
+    difficulty: 'INTERMEDIATE' as const,
+    category: 'flip',
+    keywords: [
+      'layout',
+      'tata letak',
+      'grid',
+      'daftar',
+      'kartu',
+      'galeri',
+      'flip',
+    ],
+    libraries: ['GSAP', 'Flip', 'React'],
+    tags: ['flip', 'layout', 'interaction'],
+    aiPrompt:
+      'Buat galeri React TypeScript berisi tiga kartu dengan pilihan Grid dan Daftar. Sebelum mengubah state layout, simpan posisi dan ukuran kartu memakai Flip.getState. Setelah DOM diperbarui, jalankan Flip.from dengan scale dan easing power3.inOut di useGSAP. Beri tombol aria-pressed, hormati prefers-reduced-motion, dan bersihkan animasi milik galeri ketika preferensi berubah atau komponen unmount.',
+  },
+  {
+    slug: 'motion-path',
+    technicalName: 'SVG Motion Path',
+    indonesianName: 'Objek menelusuri jalur SVG',
+    shortDescription:
+      'Geser pengatur progres untuk membawa penanda menyusuri kurva.',
+    explanation:
+      'MotionPathPlugin mengubah sebuah path SVG menjadi lintasan yang dapat diikuti elemen. Tween yang dijeda bisa diposisikan dengan progress, sehingga pengatur progres menentukan langsung posisi penanda di sepanjang kurva.\n\nInput range dapat digeser dengan sentuhan atau tombol arah. Titik pada lintasan membantu membaca posisi awal, tengah, dan akhir.',
+    difficulty: 'INTERMEDIATE' as const,
+    category: 'motion-path',
+    keywords: [
+      'motion path',
+      'lintasan',
+      'jalur',
+      'orbit',
+      'kurva',
+      'slider',
+      'pengatur progres',
+    ],
+    libraries: ['GSAP', 'MotionPathPlugin', 'React'],
+    tags: ['svg', 'motion-path', 'interaction'],
+    aiPrompt:
+      'Buat demo React TypeScript yang menampilkan jalur SVG melengkung dan sebuah penanda. Gunakan useGSAP dan MotionPathPlugin untuk menyelaraskan penanda dengan path dan buat tween terjeda. Hubungkan input range berlabel Progres lintasan ke tween.progress agar penanda bergerak ketika pengguna memakai mouse, sentuhan atau tombol arah. Tampilkan seluruh jalur dan penanda dari awal, serta bersihkan tween ketika komponen dilepas.',
+  },
+  {
+    slug: 'magnetic-button',
+    technicalName: 'Magnetic Button',
+    indonesianName: 'Tombol mengikuti arah penunjuk',
+    shortDescription:
+      'Dekati tombol dengan kursor untuk melihat efek tarikan magnet.',
+    explanation:
+      'Area interaksi tetap berada di tempatnya sementara permukaan tombol bergeser mengikuti posisi penunjuk. GSAP quickTo memperbarui tujuan transform tanpa membuat tween baru pada setiap peristiwa pointermove. Permukaan kembali ke pusat ketika penunjuk keluar atau saat tombol dikunci.\n\nTombol asli tetap bisa ditekan dengan sentuhan dan keyboard. Pengaturan pengurangan gerak mematikan tarikan penunjuk, sementara tombol tetap bisa digunakan.',
+    difficulty: 'INTERMEDIATE' as const,
+    category: 'cursor',
+    keywords: [
+      'magnet',
+      'magnetik',
+      'tombol',
+      'cursor',
+      'kursor',
+      'pointer',
+      'hover',
+      'quickto',
+    ],
+    libraries: ['GSAP', 'React'],
+    tags: ['pointer', 'interaction', 'transform'],
+    aiPrompt:
+      'Buat tombol magnetik React TypeScript dengan area interaksi yang tetap dan permukaan visual yang dapat diterjemahkan. Gunakan useGSAP dan gsap.quickTo untuk memperbarui x dan y dari posisi penunjuk. Batasi jarak gerak dan kembalikan ke pusat saat penunjuk keluar. Aktifkan efek hanya untuk fine pointer dan preferensi gerak normal. Jaga tombol asli beserta aria-pressed agar berfungsi dengan sentuhan dan keyboard, lalu bersihkan semua listener saat unmount.',
+  },
+  {
+    slug: 'stagger-grid',
+    technicalName: 'Staggered Grid Reveal',
+    indonesianName: 'Petak tampil bergiliran',
+    shortDescription:
+      'Putar ulang pengungkapan enam petak dengan jeda berurutan.',
+    explanation:
+      'Stagger memberi jeda antarelemen yang berbagi satu tween. Perubahan posisi, skala, dan opacity setiap petak dimulai bergiliran sehingga pengguna dapat mengikuti arah kemunculannya.\n\nSusunan lengkap langsung terlihat saat demo dimuat. Tombol putar ulang menjalankan gerak sesuai permintaan. Saat pengurangan gerak aktif, semua petak tetap tampil.',
+    difficulty: 'INTERMEDIATE' as const,
+    category: 'stagger',
+    keywords: [
+      'stagger',
+      'petak',
+      'berurutan',
+      'bergiliran',
+      'grid reveal',
+      'jeda',
+    ],
+    libraries: ['GSAP', 'React'],
+    tags: ['stagger', 'reveal', 'grid'],
+    aiPrompt:
+      'Buat panggung React TypeScript berisi enam petak geometris yang sudah terlihat saat dimuat. Gunakan useGSAP dan tween terjeda dengan stagger untuk memunculkan petak secara berurutan lewat transform dan opacity. Sediakan tombol Putar ulang yang dapat diakses keyboard. Hormati prefers-reduced-motion dan pulihkan keadaan statis ketika pengaturan berubah atau komponen dilepas.',
   },
 ];
 export async function seed(prisma: PrismaClient) {

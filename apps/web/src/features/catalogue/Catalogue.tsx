@@ -45,26 +45,23 @@ export function Catalogue() {
   return (
     <div className="page-width">
       <section className="catalogue-intro">
-        <div>
+        <div className="intro-copy">
           <h1>
             Punya ide gerak.
-            <br />
-            <span>Temukan tekniknya.</span>
+            <br /> <span>Temukan tekniknya.</span>
           </h1>
-          <p>
-            Jelajahi animasi, pahami cara kerjanya, lalu bawa
-            <br className="desktop-break" /> ke proyekmu. Satu teknik, satu
-            eksperimen.
-          </p>
+          <p>Jelajahi animasi, pahami cara kerjanya, lalu bawa ke proyekmu.</p>
+          <a className="button primary" href="#catalogue-heading">
+            Jelajahi animasi <ArrowRight size={18} aria-hidden="true" />
+          </a>
         </div>
-        <div className="intro-note">
-          <span className="note-line" />
-          <p>
-            Dari “gimana bikinnya?”
-            <br />
-            ke “oh, ini namanya.”
-          </p>
-          <span className="mono">LABORATORIUM ANIMASI</span>
+        <div className="hero-orbit" aria-hidden="true">
+          <span className="orbit-ring" />
+          <span className="orbit-ring" />
+          <span className="orbit-ring" />
+          <span className="orbit-ring" />
+          <span className="orbit-ring" />
+          <span className="orbit-core" />
         </div>
       </section>
       <section aria-label="Pencarian animasi">
@@ -99,6 +96,7 @@ export function Catalogue() {
             'beda kecepatan',
             'kubus 3D',
             'menggambar garis',
+            'bentuk berubah',
           ].map((term) => (
             <button key={term} onClick={() => update('q', term)}>
               {term}
@@ -114,12 +112,12 @@ export function Catalogue() {
           <h2 id="catalogue-heading">
             Eksplorasi animasi {rangeLabel && <span>{rangeLabel}</span>}
           </h2>
-          <span className="mono">BELAJAR LEWAT GERAK</span>
         </div>
         <div className="filter-bar">
           <div className="category-tabs" role="group" aria-label="Kategori">
             <button
               className={!params.get('category') ? 'active' : ''}
+              aria-pressed={!params.get('category')}
               onClick={() => update('category', '')}
             >
               Semua animasi
@@ -133,6 +131,12 @@ export function Catalogue() {
                   '3d',
                   'svg-morph',
                   'svg-draw',
+                  'horizontal',
+                  'typography',
+                  'flip',
+                  'motion-path',
+                  'cursor',
+                  'stagger',
                   'scroll-pinning',
                   'depth-parallax',
                   'scroll-3d',
@@ -147,6 +151,7 @@ export function Catalogue() {
                     params.get('category') === category.slug ? 'active' : ''
                   }
                   key={category.slug}
+                  aria-pressed={params.get('category') === category.slug}
                   onClick={() => update('category', category.slug)}
                 >
                   {category.name}
@@ -200,35 +205,27 @@ export function Catalogue() {
               {result.data.items.map((animation) => (
                 <article className="animation-card" key={animation.id}>
                   <Preview id={animation.demoId} />
-                  <div className="card-meta">
-                    <span>{animation.category.name}</span>
-                    <span
-                      className={`difficulty difficulty-${animation.difficulty.toLowerCase()}`}
+                  <div className="card-body">
+                    <div className="card-meta">
+                      <span>{animation.category.name}</span>
+                      <span>{difficultyNames[animation.difficulty]}</span>
+                    </div>
+                    <Link
+                      className="card-link"
+                      to={`/animasi/${animation.slug}`}
                     >
-                      <i />
-                      {difficultyNames[animation.difficulty]}
-                    </span>
-                  </div>
-                  <Link className="card-link" to={`/animasi/${animation.slug}`}>
-                    <h3>{animation.technicalName}</h3>
-                    <ArrowRight size={20} />
-                  </Link>
-                  <p className="card-description">
-                    {animation.shortDescription}
-                  </p>
-                  <div className="card-tags">
-                    {animation.libraries.slice(0, 3).map((tag) => (
-                      <span key={tag}>{tag}</span>
-                    ))}
+                      <h3>{animation.technicalName}</h3>
+                      <ArrowRight size={20} aria-hidden="true" />
+                    </Link>
+                    <p className="card-description">
+                      {animation.shortDescription}
+                    </p>
                   </div>
                 </article>
               ))}
             </div>
             <div className="results-footer">
-              <span>
-                {result.data.total} eksperimen tersedia. Lebih banyak gerakan
-                sedang direncanakan.
-              </span>
+              <span>{result.data.total} eksperimen tersedia.</span>
               {result.data.total > result.data.limit && (
                 <div>
                   <button
@@ -262,9 +259,8 @@ export function Catalogue() {
         )}
       </section>
       <section className="learning-note">
-        <span className="note-number">⌘</span>
         <div>
-          <h2>Bukan sekadar copy-paste.</h2>
+          <h2>Coba teknik pertamamu.</h2>
           <p>
             Setiap eksperimen dilengkapi penjelasan, kode yang bisa dipakai,
             <br className="desktop-break" /> dan prompt AI untuk membantumu

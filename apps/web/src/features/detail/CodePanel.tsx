@@ -39,7 +39,13 @@ export function CopyButton({ text, label }: { text: string; label: string }) {
     </>
   );
 }
-export function CodePanel({ source }: { source: string }) {
+export function CodePanel({
+  source,
+  usesThree,
+}: {
+  source: string;
+  usesThree: boolean;
+}) {
   const [html, setHtml] = useState('');
   useEffect(() => {
     let active = true;
@@ -62,16 +68,15 @@ export function CodePanel({ source }: { source: string }) {
         <CopyButton text={source} label="Copy Code" />
       </div>
       <p>
-        Simpan sebagai komponen <code>.tsx</code> di proyek React + Vite. Instal
-        dependensi yang tercantum. Ini adalah source yang sama dengan demo
-        langsung.
+        Simpan sebagai komponen <code>.tsx</code> di proyek React + Vite. Instal{' '}
+        <code>gsap</code> dan <code>@gsap/react</code>.
       </p>
-      <p>
-        Dependensi dasar: <code>pnpm add gsap @gsap/react</code>. Untuk kubus
-        3D, tambahkan <code>pnpm add three @react-three/fiber</code> dan{' '}
-        <code>pnpm add -D @types/three</code>. Gunakan React 19 untuk contoh R3F
-        ini.
-      </p>
+      {usesThree && (
+        <p>
+          Untuk kubus 3D, gunakan React 19 dan instal <code>three</code>,{' '}
+          <code>@react-three/fiber</code>, dan <code>@types/three</code>.
+        </p>
+      )}
       {html ? (
         <div
           className="code-block"

@@ -5,6 +5,13 @@ export const demoIds = [
   'depth-parallax',
   'scroll-cube',
   'svg-draw',
+  'svg-morph',
+  'horizontal-story',
+  'kinetic-type',
+  'flip-gallery',
+  'motion-path',
+  'magnetic-button',
+  'stagger-grid',
 ] as const;
 export type DemoId = (typeof demoIds)[number];
 export const demos: Record<
@@ -14,6 +21,19 @@ export const demos: Record<
     loadSource: () => Promise<string>;
   }
 > = {
+  'horizontal-story': {
+    Component: lazy(() => import('./HorizontalStory')),
+    loadSource: () =>
+      import('./HorizontalStory.tsx?raw').then((m) => m.default),
+  },
+  'kinetic-type': {
+    Component: lazy(() => import('./KineticType')),
+    loadSource: () => import('./KineticType.tsx?raw').then((m) => m.default),
+  },
+  'flip-gallery': {
+    Component: lazy(() => import('./FlipGallery')),
+    loadSource: () => import('./FlipGallery.tsx?raw').then((m) => m.default),
+  },
   'pin-scrub': {
     Component: lazy(() => import('./PinScrub')),
     loadSource: () => import('./PinScrub.tsx?raw').then((m) => m.default),
@@ -29,5 +49,21 @@ export const demos: Record<
   'svg-draw': {
     Component: lazy(() => import('./SvgDraw')),
     loadSource: () => import('./SvgDraw.tsx?raw').then((m) => m.default),
+  },
+  'svg-morph': {
+    Component: lazy(() => import('./SvgMorph')),
+    loadSource: () => import('./SvgMorph.tsx?raw').then((m) => m.default),
+  },
+  'motion-path': {
+    Component: lazy(() => import('./MotionPath')),
+    loadSource: () => import('./MotionPath.tsx?raw').then((m) => m.default),
+  },
+  'magnetic-button': {
+    Component: lazy(() => import('./MagneticButton')),
+    loadSource: () => import('./MagneticButton.tsx?raw').then((m) => m.default),
+  },
+  'stagger-grid': {
+    Component: lazy(() => import('./StaggerGrid')),
+    loadSource: () => import('./StaggerGrid.tsx?raw').then((m) => m.default),
   },
 };

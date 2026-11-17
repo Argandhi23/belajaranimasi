@@ -3,6 +3,10 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { Play, Pause } from 'lucide-react';
 gsap.registerPlugin(useGSAP);
+const PREVIEW_MORPH_START =
+  'M 60 16 C 84 16, 104 36, 104 60 C 104 84, 84 104, 60 104 C 36 104, 16 84, 16 60 C 16 36, 36 16, 60 16 Z';
+const PREVIEW_MORPH_END =
+  'M 60 8 C 68 42, 78 52, 112 60 C 78 68, 68 78, 60 112 C 52 78, 42 68, 8 60 C 42 52, 52 42, 60 8 Z';
 export function Preview({ id }: { id: string }) {
   const root = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -32,6 +36,37 @@ export function Preview({ id }: { id: string }) {
               { strokeDashoffset: 0 },
               0,
             );
+          else if (id === 'svg-morph')
+            timeline.fromTo(
+              '.svg-morph-shape',
+              { attr: { d: PREVIEW_MORPH_START } },
+              { attr: { d: PREVIEW_MORPH_END } },
+              0,
+            );
+          else if (id === 'horizontal-story')
+            timeline.to('.preview-posters', { x: -42 });
+          else if (id === 'kinetic-type')
+            timeline.from('.preview-type span', {
+              yPercent: 110,
+              stagger: 0.12,
+            });
+          else if (id === 'flip-gallery')
+            timeline.to('.preview-tiles i', {
+              x: (index) => [34, 0, -34][index],
+              y: (index) => [-34, 0, 34][index],
+            });
+          else if (id === 'motion-path')
+            timeline.to('.preview-path-orbit', { rotation: 240, ease: 'none' });
+          else if (id === 'magnetic-button')
+            timeline.to('.preview-magnet', { x: 25, y: -17, rotation: -8 });
+          else if (id === 'stagger-grid')
+            timeline.from('.preview-stagger i', {
+              y: 18,
+              scale: 0.65,
+              opacity: 0.35,
+              duration: 0.6,
+              stagger: 0.1,
+            });
           else
             timeline.to('.preview-shape', {
               rotation: id === 'scroll-cube' ? 110 : 180,
@@ -62,15 +97,6 @@ export function Preview({ id }: { id: string }) {
   );
   return (
     <div ref={root} className={`preview preview-${id}`}>
-      <span className="preview-index">
-        {id === 'pin-scrub'
-          ? '01 / SCROLL'
-          : id === 'depth-parallax'
-            ? '02 / DEPTH'
-            : id === 'scroll-cube'
-              ? '03 / WEBGL'
-              : '04 / VECTOR'}
-      </span>
       <div className="preview-art" aria-hidden="true">
         {id === 'depth-parallax' ? (
           <>
@@ -95,7 +121,7 @@ export function Preview({ id }: { id: string }) {
             <path
               d="M 16 78 C 52 18, 92 98, 126 38 C 144 12, 156 54, 166 28"
               fill="none"
-              stroke="#99ccb9"
+              stroke="#9af4ce"
               strokeWidth="4"
               strokeLinecap="round"
               strokeDasharray="5 7"
@@ -104,24 +130,70 @@ export function Preview({ id }: { id: string }) {
               className="svg-draw-line"
               d="M 16 78 C 52 18, 92 98, 126 38 C 144 12, 156 54, 166 28"
               fill="none"
-              stroke="#1f7a5c"
+              stroke="#e0ff95"
               strokeWidth="6"
               strokeLinecap="round"
             />
-            <circle cx="16" cy="78" r="5" fill="#1f7a5c" />
-            <circle cx="166" cy="28" r="5" fill="#1f7a5c" />
+            <circle cx="16" cy="78" r="5" fill="#e0ff95" />
+            <circle cx="166" cy="28" r="5" fill="#e0ff95" />
           </svg>
+        ) : id === 'svg-morph' ? (
+          <svg className="preview-shape svg-morph-sketch" viewBox="0 0 120 120">
+            <path
+              d={PREVIEW_MORPH_END}
+              fill="none"
+              stroke="#d7abc3"
+              strokeWidth="2.5"
+              strokeDasharray="4 5"
+            />
+            <path
+              className="svg-morph-shape"
+              d={PREVIEW_MORPH_START}
+              fill="#dc94c16b"
+              stroke="#ffd3ef"
+              strokeWidth="4.5"
+              strokeLinejoin="round"
+            />
+          </svg>
+        ) : id === 'horizontal-story' ? (
+          <div className="preview-posters">
+            <i />
+            <i />
+            <i />
+          </div>
+        ) : id === 'kinetic-type' ? (
+          <div className="preview-type">
+            <span>Huruf</span> <span>ikut</span>
+          </div>
+        ) : id === 'flip-gallery' ? (
+          <div className="preview-tiles">
+            <i />
+            <i />
+            <i />
+          </div>
+        ) : id === 'motion-path' ? (
+          <div className="preview-path-orbit">
+            <i />
+          </div>
+        ) : id === 'magnetic-button' ? (
+          <div className="preview-magnet-field">
+            <i className="preview-magnet" />
+          </div>
+        ) : id === 'stagger-grid' ? (
+          <div className="preview-stagger">
+            <i />
+            <i />
+            <i />
+            <i />
+            <i />
+            <i />
+          </div>
         ) : (
           <i className="preview-shape preview-square">
             <span />
           </i>
         )}
       </div>
-      <span className="preview-caption">
-        {id === 'scroll-cube'
-          ? 'Ilustrasi · buka demo 3D'
-          : 'Cuplikan gerak · demo lengkap di dalam'}
-      </span>
       <button
         className="preview-play"
         aria-label={playing ? 'Jeda cuplikan' : 'Putar cuplikan'}

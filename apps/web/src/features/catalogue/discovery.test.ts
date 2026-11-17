@@ -11,6 +11,7 @@ describe('catalogue URL boundaries', () => {
   it('accepts only real local demo identifiers', () => {
     expect(isDemoId('pin-scrub')).toBe(true);
     expect(isDemoId('svg-draw')).toBe(true);
+    expect(isDemoId('svg-morph')).toBe(true);
     expect(isDemoId('__proto__')).toBe(false);
     expect(isDemoId('https://example.com/code.js')).toBe(false);
   });

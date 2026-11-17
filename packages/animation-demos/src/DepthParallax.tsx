@@ -49,21 +49,42 @@ export default function DepthParallax() {
     <section
       ref={root}
       data-testid="demo-depth-parallax"
-      style={{ color: '#202c3a', background: '#f8fafc' }}
+      style={{ color: '#e9faff', background: '#101e2a' }}
     >
-      <header style={{ padding: '64px 24px', maxWidth: 760, margin: 'auto' }}>
-        <p style={{ fontFamily: 'monospace', color: '#2862a6' }}>
-          02 / DEPTH PARALLAX
-        </p>
-        <h2 style={{ fontSize: 'clamp(28px, 5vw, 48px)' }}>
+      <header
+        style={{
+          maxWidth: 1120,
+          margin: 'auto',
+          padding: 'clamp(26px, 4vw, 56px) clamp(20px, 5vw, 70px)',
+        }}
+      >
+        <h2
+          style={{
+            margin: '0 0 14px',
+            fontSize: 'clamp(1.8rem, 3.8vw, 3.6rem)',
+            fontWeight: 900,
+            letterSpacing: '-0.065em',
+            lineHeight: 1,
+            textWrap: 'balance',
+          }}
+        >
           Jarak terasa lewat gerak.
         </h2>
-        <p>
+        <p style={{ margin: '0 0 8px', maxWidth: '58ch', lineHeight: 1.6 }}>
           Gulir perlahan. Lapisan depan bergerak lebih jauh daripada lapisan
           belakang, membentuk ilusi kedalaman.
         </p>
-        <p>
-          Pengurangan gerak menampilkan susunan lapisan statis tanpa parallax.
+        <p
+          style={{
+            margin: 0,
+            maxWidth: '58ch',
+            color: '#c1e4e9',
+            fontSize: '0.875rem',
+            lineHeight: 1.6,
+          }}
+        >
+          Jika pengurangan gerak aktif, ketiga lapisan tetap terlihat dalam
+          posisi diam.
         </p>
       </header>
       <div
@@ -75,9 +96,23 @@ export default function DepthParallax() {
           overflow: 'hidden',
           display: 'grid',
           placeItems: 'center',
-          background: 'linear-gradient(#e8f1fa, #f8fafc)',
+          isolation: 'isolate',
+          borderTop: '1px solid #34536a',
+          background:
+            'radial-gradient(ellipse at 66% 40%, #1b4255, transparent 68%), #0b1824',
         }}
       >
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage:
+              'linear-gradient(#a5ddea12 1px, transparent 1px), linear-gradient(90deg, #a5ddea12 1px, transparent 1px)',
+            backgroundSize: '44px 44px',
+            backgroundPosition: 'center',
+          }}
+        />
         <div
           data-depth="50"
           data-testid="parallax-back"
@@ -87,8 +122,10 @@ export default function DepthParallax() {
             width: 'min(65vw, 460px)',
             height: 'min(65vw, 460px)',
             borderRadius: '50%',
-            background: '#b7d2ed',
-            top: '20%',
+            background:
+              'repeating-radial-gradient(circle, transparent 0 17px, #9ad5e64d 18px 19px, transparent 20px 29px), #234965',
+            border: '1px solid #75a6bd',
+            top: '14%',
             left: '10%',
           }}
         />
@@ -100,7 +137,9 @@ export default function DepthParallax() {
             position: 'absolute',
             width: 'min(45vw, 300px)',
             height: 'min(45vw, 300px)',
-            background: '#5c9bd0',
+            background: 'linear-gradient(135deg, #5298a9, #255065)',
+            border: '1px solid #87bacb',
+            boxShadow: '0 18px 48px #08141b5c',
             borderRadius: 24,
             top: '40%',
             right: '12%',
@@ -115,35 +154,69 @@ export default function DepthParallax() {
             position: 'absolute',
             width: 'min(27vw, 160px)',
             height: 'min(27vw, 160px)',
-            background: '#245a91',
+            background: 'linear-gradient(150deg, #b2fff0, #5abec6)',
+            boxShadow: '0 22px 48px #08141b7a',
             borderRadius: 16,
             top: '65%',
             left: '28%',
             rotate: '20deg',
           }}
         />
-        <p
+        <dl
           style={{
+            position: 'absolute',
+            insetInline: 'clamp(12px, 5vw, 52px)',
+            bottom: 24,
             zIndex: 1,
-            padding: '16px 24px',
-            background: '#ffffffed',
-            border: '1px solid #c7d6e5',
-            borderRadius: 12,
-            maxWidth: 280,
-            textAlign: 'center',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+            maxWidth: 560,
+            margin: '0 auto',
+            padding: '12px 0',
+            background: '#101e2a',
+            border: '1px solid #44667c',
+            borderRadius: 6,
           }}
         >
-          Belakang: 100 px
-          <br />
-          Tengah: 260 px
-          <br />
-          Depan: 480 px
-          <br />
-          <small>Jarak perjalanan vertikal</small>
-        </p>
+          {(
+            [
+              ['Belakang', '100 px'],
+              ['Tengah', '260 px'],
+              ['Depan', '480 px'],
+            ] as const
+          ).map(([label, distance], index) => (
+            <div
+              key={label}
+              style={{
+                borderInlineStart: index ? '1px solid #44667c' : undefined,
+                textAlign: 'center',
+              }}
+            >
+              <dt style={{ color: '#c1e4e9', fontSize: '0.75rem' }}>{label}</dt>
+              <dd
+                style={{
+                  margin: '4px 0 0',
+                  color: '#e9faff',
+                  font: '700 clamp(0.9rem, 3vw, 1.35rem)/1.4 monospace',
+                }}
+              >
+                {distance}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </div>
-      <footer style={{ padding: '80px 24px', textAlign: 'center' }}>
-        Tiga kecepatan. Satu arah scroll. Tidak ada elemen yang ditahan.
+      <footer
+        style={{
+          borderTop: '1px solid #34536a',
+          padding: 'clamp(36px, 7vw, 80px) 24px',
+          textAlign: 'center',
+          color: '#c1e4e9',
+          lineHeight: 1.6,
+        }}
+      >
+        Setiap angka menunjukkan jarak gerak vertikal lapisan. Panggung ikut
+        bergulir bersama halaman.
       </footer>
     </section>
   );

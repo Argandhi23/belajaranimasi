@@ -1,13 +1,7 @@
-export const implementedIds = [
-  'pin-scrub',
-  'depth-parallax',
-  'scroll-cube',
-  'svg-draw',
-] as const;
-export function isDemoId(
-  value: string,
-): value is (typeof implementedIds)[number] {
-  return implementedIds.some((id) => id === value);
+import { demoIds, type DemoId } from '@belajar/animation-demos';
+
+export function isDemoId(value: string): value is DemoId {
+  return demoIds.some((id) => id === value);
 }
 export function catalogueQuery(params: URLSearchParams) {
   const query = new URLSearchParams();
