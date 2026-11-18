@@ -197,7 +197,8 @@ export default function DepthParallax() {
                 style={{
                   margin: '4px 0 0',
                   color: '#e9faff',
-                  font: '700 clamp(0.9rem, 3vw, 1.35rem)/1.4 monospace',
+                  font: '700 clamp(0.9rem, 3vw, 1.35rem)/1.4 var(--font-sans, inherit)',
+                  fontVariantNumeric: 'tabular-nums',
                 }}
               >
                 {distance}

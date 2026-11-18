@@ -73,7 +73,7 @@ export function CodePanel({
       </p>
       {usesThree && (
         <p>
-          Untuk kubus 3D, gunakan React 19 dan instal <code>three</code>,{' '}
+          Untuk demo 3D, gunakan React 19 dan instal <code>three</code>,{' '}
           <code>@react-three/fiber</code>, dan <code>@types/three</code>.
         </p>
       )}

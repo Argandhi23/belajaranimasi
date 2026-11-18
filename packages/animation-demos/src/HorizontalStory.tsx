@@ -127,7 +127,13 @@ export default function HorizontalStory() {
                   gap: 30,
                 }}
               >
-                <span aria-hidden="true" style={{ fontFamily: 'monospace' }}>
+                <span
+                  aria-hidden="true"
+                  style={{
+                    fontWeight: 700,
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
+                >
                   {String(index + 1).padStart(2, '0')} / 03
                 </span>
                 <div
@@ -145,7 +151,7 @@ export default function HorizontalStory() {
                   <h3
                     style={{
                       margin: '0 0 6px',
-                      fontFamily: 'Georgia, serif',
+                      fontWeight: 800,
                       fontSize: 'clamp(2.5rem, 8vw, 6.5rem)',
                       lineHeight: 0.95,
                       letterSpacing: '-0.055em',

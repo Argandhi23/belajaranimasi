@@ -161,7 +161,7 @@ export default function PinScrub() {
             border: '1px solid #6a4775',
             borderRadius: 6,
             color: '#e7d0eb',
-            font: '0.8rem/1.5 monospace',
+            font: '600 0.8rem/1.5 var(--font-sans, inherit)',
             textAlign: 'center',
           }}
         >

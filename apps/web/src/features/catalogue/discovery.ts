@@ -14,7 +14,7 @@ export function catalogueQuery(params: URLSearchParams) {
     'page',
     String(Number.isInteger(page) && page > 0 && page <= 10000 ? page : 1),
   );
-  query.set('limit', '12');
+  query.set('limit', '18');
   return query.toString();
 }
 export function catalogueRangeLabel(

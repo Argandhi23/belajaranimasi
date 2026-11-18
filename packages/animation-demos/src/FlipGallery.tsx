@@ -85,8 +85,8 @@ export default function FlipGallery() {
           <h2
             id="flip-title"
             style={{
-              fontFamily: 'Georgia, serif',
               fontSize: 'clamp(2rem, 6vw, 4.5rem)',
+              fontWeight: 800,
               lineHeight: 1,
               margin: 0,
               letterSpacing: '-0.05em',

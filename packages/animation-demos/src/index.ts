@@ -12,6 +12,9 @@ export const demoIds = [
   'motion-path',
   'magnetic-button',
   'stagger-grid',
+  'three-torus-orbit',
+  'text-scramble',
+  'timeline-choreography',
 ] as const;
 export type DemoId = (typeof demoIds)[number];
 export const demos: Record<
@@ -65,5 +68,19 @@ export const demos: Record<
   'stagger-grid': {
     Component: lazy(() => import('./StaggerGrid')),
     loadSource: () => import('./StaggerGrid.tsx?raw').then((m) => m.default),
+  },
+  'three-torus-orbit': {
+    Component: lazy(() => import('./ThreeTorusOrbit')),
+    loadSource: () =>
+      import('./ThreeTorusOrbit.tsx?raw').then((m) => m.default),
+  },
+  'text-scramble': {
+    Component: lazy(() => import('./TextScramble')),
+    loadSource: () => import('./TextScramble.tsx?raw').then((m) => m.default),
+  },
+  'timeline-choreography': {
+    Component: lazy(() => import('./TimelineChoreography')),
+    loadSource: () =>
+      import('./TimelineChoreography.tsx?raw').then((m) => m.default),
   },
 };

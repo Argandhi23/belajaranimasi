@@ -9,6 +9,9 @@ describe('animation demo registry', () => {
     'motion-path',
     'magnetic-button',
     'stagger-grid',
+    'three-torus-orbit',
+    'text-scramble',
+    'timeline-choreography',
   ])('makes %s available as a demo with copyable source', async (id) => {
     expect(demoIds).toContain(id);
     const demo = Object.entries(demos).find(([slug]) => slug === id)?.[1];

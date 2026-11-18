@@ -353,3 +353,80 @@ test('svg morph interpolates path d attribute on scroll, navigates cleanly and r
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect.poll(() => path.getAttribute('d')).toBe(initialD);
 });
+
+test('interactive 3D torus orbit responds to controls and falls back on reduced motion', async ({
+  page,
+}) => {
+  await page.goto('/demo/three-torus-orbit');
+  await expect(page.locator('canvas')).toBeVisible();
+  await expect(page.getByTestId('torus-fallback')).toHaveCount(0);
+
+  const range = page.getByRole('slider', { name: 'Sudut rotasi' });
+  await expect(range).toHaveValue('0');
+  const before = await page.locator('canvas').screenshot();
+  await range.press('End');
+  await expect(range).toHaveValue('100');
+  await expect
+    .poll(async () =>
+      Buffer.compare(before, await page.locator('canvas').screenshot()),
+    )
+    .not.toBe(0);
+
+  await page.getByRole('button', { name: 'Mode rangka' }).click();
+  await expect(
+    page.getByRole('button', { name: 'Mode rangka' }),
+  ).toHaveAttribute('aria-pressed', 'true');
+
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(page.getByTestId('torus-fallback')).toBeVisible();
+  await expect(page.locator('canvas')).toHaveCount(0);
+});
+
+test('text scramble updates phrase and disables replay in reduced motion', async ({
+  page,
+}) => {
+  await page.goto('/demo/text-scramble');
+  const target = page.getByTestId('scramble-target');
+  const replay = page.getByTestId('scramble-replay');
+  await expect(target).toHaveText('Gerak memberi makna');
+  await expect(replay).toBeEnabled();
+
+  await page.getByRole('button', { name: 'Kode membentuk ritme' }).click();
+  await expect(target).toHaveText('Kode membentuk ritme');
+
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(replay).toBeDisabled();
+  await page.getByRole('button', { name: 'Interaksi terasa hidup' }).click();
+  await expect(target).toHaveText('Interaksi terasa hidup');
+});
+
+test('timeline choreography scrubs with range slider and disables replay in reduced motion', async ({
+  page,
+}) => {
+  await page.goto('/demo/timeline-choreography');
+  const range = page.getByRole('slider', { name: 'Progres timeline' });
+  const replay = page.getByTestId('timeline-replay');
+  const firstCard = page.locator('[data-timeline-card]').first();
+
+  await expect(range).toHaveValue('100');
+  await expect(replay).toBeEnabled();
+
+  await range.press('Home');
+  await expect(range).toHaveValue('0');
+  await expect
+    .poll(() =>
+      firstCard.evaluate((el) => Number(getComputedStyle(el).opacity)),
+    )
+    .toBeLessThan(1);
+
+  await replay.click();
+  await expect(range).toHaveValue('100');
+  await expect
+    .poll(() =>
+      firstCard.evaluate((el) => Number(getComputedStyle(el).opacity)),
+    )
+    .toBe(1);
+
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(replay).toBeDisabled();
+});
