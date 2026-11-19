@@ -139,7 +139,12 @@ export function Detail({ fullscreen = false }: { fullscreen?: boolean }) {
             {!Demo ? (
               <p>Kode untuk demo ini belum tersedia.</p>
             ) : source ? (
-              <CodePanel source={source} usesThree={demoId === 'scroll-cube'} />
+              <CodePanel
+                source={source}
+                usesThree={
+                  demoId === 'scroll-cube' || demoId === 'three-torus-orbit'
+                }
+              />
             ) : sourceError ? (
               <p role="alert">
                 Kode belum dapat dimuat. Muat ulang halaman untuk mencoba lagi.

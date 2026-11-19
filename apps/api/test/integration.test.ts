@@ -55,7 +55,7 @@ test('published list, pagination, detail and taxonomy', async () => {
   const page = await fetch(base + '/api/animations?limit=2').then((r) =>
     r.json(),
   );
-  assert.equal(page.total, 11);
+  assert.equal(page.total, 14);
   assert.equal(page.items.length, 2);
   const next = await fetch(base + '/api/animations?limit=2&page=2').then((r) =>
     r.json(),
@@ -103,7 +103,7 @@ test('natural language synonyms and combined filters', async () => {
   const stop = await fetch(base + '/api/animations?q=yang%20dan%20di').then(
     (r) => r.json(),
   );
-  assert.equal(stop.total, 11);
+  assert.equal(stop.total, 14);
   const filtered = await fetch(
     base + '/api/animations?category=pinning&difficulty=INTERMEDIATE',
   ).then((r) => r.json());
@@ -175,4 +175,31 @@ test('indexed search is backfilled and follows metadata changes', async () => {
   >`SELECT indexdef FROM pg_indexes WHERE tablename = 'Animation' AND indexname = 'Animation_searchVector_idx'`;
   assert.equal(indexes.length, 1);
   assert.match(indexes[0].indexdef, /USING gin/);
+});
+
+test('sets edge cache headers on public read endpoints and no-store on health and errors', async () => {
+  for (const path of [
+    '/api/animations',
+    '/api/animations/pin-scrub',
+    '/api/categories',
+  ]) {
+    const response = await fetch(base + path);
+    assert.equal(response.status, 200, path);
+    assert.equal(
+      response.headers.get('cache-control'),
+      'public, max-age=0, s-maxage=60, stale-while-revalidate=300',
+      path,
+    );
+  }
+  const health = await fetch(base + '/health');
+  assert.equal(health.status, 200);
+  assert.equal(health.headers.get('cache-control'), 'no-store');
+
+  const notFound = await fetch(base + '/api/animations/not-existing-slug');
+  assert.equal(notFound.status, 404);
+  assert.equal(notFound.headers.get('cache-control'), 'no-store');
+
+  const badRequest = await fetch(base + '/api/animations/INVALID_slug');
+  assert.equal(badRequest.status, 400);
+  assert.equal(badRequest.headers.get('cache-control'), 'no-store');
 });

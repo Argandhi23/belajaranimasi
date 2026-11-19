@@ -1,11 +1,17 @@
+import { useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 import { ArrowRight, Search, SlidersHorizontal, X } from 'lucide-react';
 import type { AnimationPage, Category } from '@belajar/shared';
 import { getJson } from '../../lib/api';
 import { Loading, Failure } from '../../components/Feedback';
 import { Preview } from './Preview';
 import { catalogueQuery, catalogueRangeLabel } from './discovery';
+
+gsap.registerPlugin(useGSAP);
+
 export const difficultyNames: Record<string, string> = {
   BEGINNER: 'Pemula',
   INTERMEDIATE: 'Menengah',
@@ -14,6 +20,64 @@ export const difficultyNames: Record<string, string> = {
 const baseCatalogueQuery = catalogueQuery(new URLSearchParams());
 export function Catalogue() {
   const [params, setParams] = useSearchParams();
+  const heroOrbit = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const container = heroOrbit.current;
+      if (!container) return;
+      const media = gsap.matchMedia();
+      media.add(
+        '(prefers-reduced-motion: no-preference)',
+        () => {
+          const tl = gsap.timeline({ paused: true });
+          tl.to(
+            '.orbit-ring',
+            {
+              scale: 1.07,
+              rotation: (index: number) => (index % 2 === 0 ? 10 : -10),
+              duration: 2.8,
+              stagger: { each: 0.2, from: 'center' },
+              repeat: -1,
+              yoyo: true,
+              ease: 'sine.inOut',
+            },
+            0,
+          ).to(
+            '.orbit-core',
+            {
+              rotation: 360,
+              duration: 18,
+              repeat: -1,
+              ease: 'none',
+            },
+            0,
+          );
+
+          let visible = true;
+          const sync = () => {
+            if (visible && !document.hidden) tl.play();
+            else tl.pause();
+          };
+          const observer = new IntersectionObserver(([entry]) => {
+            visible = entry?.isIntersecting ?? false;
+            sync();
+          });
+          observer.observe(container);
+          document.addEventListener('visibilitychange', sync);
+          sync();
+          return () => {
+            observer.disconnect();
+            document.removeEventListener('visibilitychange', sync);
+          };
+        },
+        heroOrbit,
+      );
+      return () => media.revert();
+    },
+    { scope: heroOrbit },
+  );
+
   const query = catalogueQuery(params);
   const result = useQuery({
     queryKey: ['animations', query],
@@ -55,7 +119,7 @@ export function Catalogue() {
             Jelajahi animasi <ArrowRight size={18} aria-hidden="true" />
           </a>
         </div>
-        <div className="hero-orbit" aria-hidden="true">
+        <div className="hero-orbit" ref={heroOrbit} aria-hidden="true">
           <span className="orbit-ring" />
           <span className="orbit-ring" />
           <span className="orbit-ring" />
@@ -126,9 +190,11 @@ export function Catalogue() {
               .filter((c) =>
                 [
                   'pinning',
+                  'scrubbing',
                   'scroll-trigger',
                   'parallax',
                   '3d',
+                  'timeline',
                   'svg-morph',
                   'svg-draw',
                   'horizontal',

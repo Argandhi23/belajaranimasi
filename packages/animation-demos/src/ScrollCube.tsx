@@ -259,7 +259,7 @@ export default function ScrollCube() {
                 borderRadius: 6,
                 color: '#eed6c8',
                 textAlign: 'center',
-                font: '0.8rem/1.5 monospace',
+                font: '600 0.8rem/1.5 var(--font-sans, inherit)',
                 pointerEvents: 'none',
               }}
             >

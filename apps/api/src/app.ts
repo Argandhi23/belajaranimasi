@@ -5,6 +5,7 @@ import {
   Controller,
   ExceptionFilter,
   Get,
+  Header,
   HttpException,
   Inject,
   Module,
@@ -38,6 +39,8 @@ import {
   Health,
 } from './dto.js';
 import { configuration } from './environment.js';
+const PUBLIC_CACHE_CONTROL =
+  'public, max-age=0, s-maxage=60, stale-while-revalidate=300';
 const validation = new ValidationPipe({
   transform: true,
   whitelist: true,
@@ -50,6 +53,7 @@ class SafeErrors implements ExceptionFilter {
     host
       .switchToHttp()
       .getResponse<Response>()
+      .setHeader('Cache-Control', 'no-store')
       .status(status)
       .json({
         statusCode: status,
@@ -68,6 +72,7 @@ class SafeErrors implements ExceptionFilter {
 class CatalogueController {
   constructor(@Inject(Catalogue) private readonly catalogue: Catalogue) {}
   @Get('animations')
+  @Header('Cache-Control', PUBLIC_CACHE_CONTROL)
   @ApiOkResponse({ type: AnimationPage })
   @ApiBadRequestResponse({ type: ApiError })
   @ApiQuery({ name: 'q', required: false, type: String, maxLength: 200 })
@@ -101,6 +106,7 @@ class CatalogueController {
     return this.catalogue.list(query as AnimationQuery);
   }
   @Get('animations/:slug')
+  @Header('Cache-Control', PUBLIC_CACHE_CONTROL)
   @ApiOkResponse({ type: Animation })
   @ApiNotFoundResponse({ type: ApiError })
   @ApiBadRequestResponse({ type: ApiError })
@@ -112,7 +118,10 @@ class CatalogueController {
     })) as AnimationSlug;
     return this.catalogue.detail(params.slug);
   }
-  @Get('categories') @ApiOkResponse({ type: [Category] }) categories() {
+  @Get('categories')
+  @Header('Cache-Control', PUBLIC_CACHE_CONTROL)
+  @ApiOkResponse({ type: [Category] })
+  categories() {
     return this.catalogue.categories();
   }
 }
@@ -120,6 +129,7 @@ class CatalogueController {
 class HealthController {
   constructor(@Inject(Database) private readonly db: Database) {}
   @Get('health')
+  @Header('Cache-Control', 'no-store')
   @ApiOkResponse({ type: Health })
   @ApiServiceUnavailableResponse({ type: ApiError })
   async health() {

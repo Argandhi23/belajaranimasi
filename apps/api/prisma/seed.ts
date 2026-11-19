@@ -334,6 +334,83 @@ const records = [
     aiPrompt:
       'Buat panggung React TypeScript berisi enam petak geometris yang sudah terlihat saat dimuat. Gunakan useGSAP dan tween terjeda dengan stagger untuk memunculkan petak secara berurutan lewat transform dan opacity. Sediakan tombol Putar ulang yang dapat diakses keyboard. Hormati prefers-reduced-motion dan pulihkan keadaan statis ketika pengaturan berubah atau komponen dilepas.',
   },
+  {
+    slug: 'three-torus-orbit',
+    technicalName: 'Interactive 3D Torus Knot',
+    indonesianName: 'Simpul torus 3D dengan kontrol sudut',
+    shortDescription:
+      'Kendalikan rotasi objek simpul torus tiga dimensi lewat preset sudut, mode rangka, dan slider.',
+    explanation:
+      'Kombinasi Three.js melalui R3F dan GSAP mempermudah interpolasi orientasi objek 3D secara halus ketika pengguna memilih preset atau menggeser slider. Scene menggunakan demand rendering agar GPU hanya menggambar ulang saat nilai rotasi atau skala benar-benar berubah.\n\nSaat preferensi pengurangan gerak aktif atau WebGL tidak tersedia, demo otomatis menampilkan ilustrasi SVG yang tetap merespons perubahan sudut rotasi dan mode rangka.',
+    difficulty: 'INTERMEDIATE' as const,
+    category: '3d',
+    keywords: [
+      'torus',
+      'simpul',
+      '3d',
+      'webgl',
+      'rotasi',
+      'wireframe',
+      'rangka',
+      'slider',
+      'interaktif',
+    ],
+    libraries: ['R3F', 'Three.js', 'GSAP', 'React'],
+    tags: ['3d', 'webgl', 'interaction'],
+    aiPrompt:
+      'Buat komponen React TypeScript dengan torusKnotGeometry pada Canvas R3F memakai frameloop demand dan DPR maksimal 1.5. Sediakan tombol preset orientasi (Isometrik, Horisontal, Putaran Penuh), toggle Mode rangka, dan slider Sudut rotasi yang menggerakkan mesh.rotation dan mesh.scale via GSAP serta memanggil invalidate pada onUpdate. Sediakan ErrorBoundary, handler webglcontextlost, dan fallback SVG saat prefers-reduced-motion aktif.',
+  },
+  {
+    slug: 'text-scramble',
+    technicalName: 'Scramble Text Decode',
+    indonesianName: 'Teks teracak lalu terurai rapi',
+    shortDescription:
+      'Ubah susunan karakter acak menjadi frasa utuh memakai GSAP ScrambleTextPlugin.',
+    explanation:
+      'ScrambleTextPlugin mengacak karakter sementara sebelum menyingkap teks tujuan secara bertahap. Dipadukan dengan garis progres di satu timeline GSAP, pengguna dapat melihat tempo decoding dari awal hingga frasa terbaca sempurna.\n\nTeks utama langsung terbaca saat halaman dibuka. Pengguna dapat mengganti frasa atau menekan Putar ulang, sementara preferensi pengurangan gerak langsung menampilkan frasa akhir tanpa pengacakan.',
+    difficulty: 'INTERMEDIATE' as const,
+    category: 'typography',
+    keywords: [
+      'scramble',
+      'decode',
+      'teks',
+      'huruf',
+      'karakter',
+      'acak',
+      'frasa',
+      'tipografi',
+      'glitch',
+    ],
+    libraries: ['GSAP', 'ScrambleTextPlugin', 'React'],
+    tags: ['typography', 'scramble', 'interaction'],
+    aiPrompt:
+      'Buat panggung tipografi React TypeScript menggunakan GSAP ScrambleTextPlugin dan useGSAP. Tampilkan judul utama yang langsung terbaca, bilah progres sinkron, tiga tombol pilihan frasa, dan tombol Putar ulang. Saat memilih frasa atau memutar ulang, jalankan timeline scrambleText dengan karakter acak kustom. Hormati prefers-reduced-motion dengan menampilkan frasa langsung tanpa animasi.',
+  },
+  {
+    slug: 'timeline-choreography',
+    technicalName: 'Multi-Stage Timeline Sequencer',
+    indonesianName: 'Urutan tiga tahap dengan satu timeline',
+    shortDescription:
+      'Koordinasikan tiga kartu tahap secara berurutan lewat label timeline dan slider progres.',
+    explanation:
+      'Satu gsap.timeline() dapat mengatur banyak elemen secara terkoordinasi memakai label waktu seperti tahapSatu, tahapDua, dan tahapTiga serta posisi relatif untuk tumpang tindih yang halus.\n\nDengan menyimpan timeline dalam ref dan menghubungkannya ke input range, pengguna bisa memutar ulang koreografi sekaligus menggeser tiap tahap maju maupun mundur. Preferensi pengurangan gerak tetap menjaga kartu terbaca sambil tetap mengizinkan scrub manual.',
+    difficulty: 'INTERMEDIATE' as const,
+    category: 'timeline',
+    keywords: [
+      'timeline',
+      'urutan',
+      'koreografi',
+      'sekuens',
+      'bertahap',
+      'label',
+      'slider',
+      'progres',
+    ],
+    libraries: ['GSAP', 'React'],
+    tags: ['timeline', 'sequence', 'interaction'],
+    aiPrompt:
+      'Buat demo koreografi timeline React TypeScript berisi tiga kartu tahap yang diatur oleh satu gsap.timeline() terjeda dengan label tahapSatu, tahapDua, dan tahapTiga. Tambahkan tombol Putar ulang dan input range berlabel Progres timeline untuk melakukan seek melalui timeline.progress(). Hormati prefers-reduced-motion dan bersihkan konteks di useGSAP saat unmount.',
+  },
 ];
 export async function seed(prisma: PrismaClient) {
   await prisma.$transaction(

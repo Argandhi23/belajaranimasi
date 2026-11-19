@@ -150,7 +150,7 @@ export default function SvgDraw() {
             border: '1px solid #355b4b',
             borderRadius: 6,
             color: '#bae7ce',
-            font: '0.8rem/1.5 monospace',
+            font: '600 0.8rem/1.5 var(--font-sans, inherit)',
             textAlign: 'center',
           }}
         >

@@ -6,7 +6,7 @@ describe('catalogue URL boundaries', () => {
       catalogueQuery(
         new URLSearchParams('page=-2&admin=true&q=  diam di tengah  '),
       ),
-    ).toBe('q=diam+di+tengah&page=1&limit=12');
+    ).toBe('q=diam+di+tengah&page=1&limit=18');
   });
   it('accepts only real local demo identifiers', () => {
     expect(isDemoId('pin-scrub')).toBe(true);

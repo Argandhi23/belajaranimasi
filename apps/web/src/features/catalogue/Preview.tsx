@@ -67,6 +67,29 @@ export function Preview({ id }: { id: string }) {
               duration: 0.6,
               stagger: 0.1,
             });
+          else if (id === 'three-torus-orbit')
+            timeline.to('.preview-torus', {
+              rotation: 180,
+              scale: 1.08,
+            });
+          else if (id === 'text-scramble')
+            timeline.fromTo(
+              '.preview-scramble span',
+              { opacity: 0.35, y: 10 },
+              { opacity: 1, y: 0, stagger: 0.14, duration: 0.55 },
+            );
+          else if (id === 'timeline-choreography')
+            timeline.fromTo(
+              '.preview-timeline i',
+              { scaleX: 0.35, opacity: 0.4 },
+              {
+                scaleX: 1,
+                opacity: 1,
+                stagger: 0.22,
+                duration: 0.5,
+                transformOrigin: 'left center',
+              },
+            );
           else
             timeline.to('.preview-shape', {
               rotation: id === 'scroll-cube' ? 110 : 180,
@@ -184,6 +207,49 @@ export function Preview({ id }: { id: string }) {
             <i />
             <i />
             <i />
+            <i />
+            <i />
+            <i />
+          </div>
+        ) : id === 'three-torus-orbit' ? (
+          <svg className="preview-shape preview-torus" viewBox="0 0 120 120">
+            <circle
+              cx="60"
+              cy="60"
+              r="36"
+              fill="none"
+              stroke="#818cf8"
+              strokeWidth="10"
+            />
+            <ellipse
+              cx="60"
+              cy="60"
+              rx="46"
+              ry="18"
+              transform="rotate(35 60 60)"
+              fill="none"
+              stroke="#c7d2fe"
+              strokeWidth="5"
+            />
+            <ellipse
+              cx="60"
+              cy="60"
+              rx="46"
+              ry="18"
+              transform="rotate(-35 60 60)"
+              fill="none"
+              stroke="#38bdf8"
+              strokeWidth="5"
+            />
+          </svg>
+        ) : id === 'text-scramble' ? (
+          <div className="preview-scramble">
+            <span>01</span>
+            <span>→</span>
+            <span>ABC</span>
+          </div>
+        ) : id === 'timeline-choreography' ? (
+          <div className="preview-timeline">
             <i />
             <i />
             <i />

@@ -21,8 +21,8 @@ This is the initial instruction template for the planned `belajar-animasi` repos
 - Tooling: pnpm workspaces, Docker Compose, Vitest, Playwright, ESLint, Prettier, and GitHub Actions.
 - Budget is Rp0. Use free, open-source developer tooling. Do not activate paid plans, payment-required trials, metered APIs, OpenAI API billing, or paid monitoring.
 - Ask before connecting a new external service, creating accounts/projects, changing account settings, or making administrator-level system changes. Existing authorization applies to its stated scope only.
-- Do not introduce Supabase, Firebase, hosted backend replacements, Stripe, Next.js, or Vercel deployment tooling without an explicit stack change. Build Web Apps bundles some guidance for those products; do not apply it to this project.
-- Intended hosting is Vercel Hobby for the frontend, Render Free for NestJS, and Neon Free for PostgreSQL. Verify current eligibility and limits before deployment. Vercel Hobby requires personal, non-commercial use; Render Free has cold starts and ephemeral storage. Never assume these tiers provide production uptime guarantees or permit every use case.
+- Do not introduce Supabase, Firebase, hosted backend replacements, Stripe, or Next.js without an explicit stack change. Build Web Apps bundles some guidance for those products; do not apply it to this project.
+- Intended hosting is Vercel Hobby with two decoupled projects (static Vite frontend and NestJS Fluid Compute backend in `sin1`) plus Neon Free for PostgreSQL. Verify current eligibility and limits before deployment. Vercel Hobby requires personal, non-commercial use and enforces monthly function/CPU quotas; Neon Free scales to zero after 5 minutes and caps monthly CU-hours. Never assume these tiers provide production uptime guarantees or permit every use case.
 - Sentry remains optional and disconnected until explicitly authorized. Prefer local logs, browser tools, and tests for initial diagnostics.
 
 ## Architecture and code quality

@@ -135,7 +135,7 @@ export default function SvgMorph() {
             y="246"
             textAnchor="middle"
             fill="#edcce3"
-            style={{ fontFamily: 'monospace', fontSize: 24 }}
+            style={{ fontFamily: 'inherit', fontWeight: 700, fontSize: 22 }}
           >
             AWAL
           </text>
@@ -168,7 +168,7 @@ export default function SvgMorph() {
             y="246"
             textAnchor="middle"
             fill="#edcce3"
-            style={{ fontFamily: 'monospace', fontSize: 24 }}
+            style={{ fontFamily: 'inherit', fontWeight: 700, fontSize: 22 }}
           >
             AKHIR
           </text>
@@ -184,7 +184,7 @@ export default function SvgMorph() {
             border: '1px solid #6b4564',
             borderRadius: 6,
             color: '#edcce3',
-            font: '0.8rem/1.5 monospace',
+            font: '600 0.8rem/1.5 var(--font-sans, inherit)',
             textAlign: 'center',
           }}
         >
