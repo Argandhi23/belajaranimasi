@@ -176,3 +176,30 @@ test('indexed search is backfilled and follows metadata changes', async () => {
   assert.equal(indexes.length, 1);
   assert.match(indexes[0].indexdef, /USING gin/);
 });
+
+test('sets edge cache headers on public read endpoints and no-store on health and errors', async () => {
+  for (const path of [
+    '/api/animations',
+    '/api/animations/pin-scrub',
+    '/api/categories',
+  ]) {
+    const response = await fetch(base + path);
+    assert.equal(response.status, 200, path);
+    assert.equal(
+      response.headers.get('cache-control'),
+      'public, max-age=0, s-maxage=60, stale-while-revalidate=300',
+      path,
+    );
+  }
+  const health = await fetch(base + '/health');
+  assert.equal(health.status, 200);
+  assert.equal(health.headers.get('cache-control'), 'no-store');
+
+  const notFound = await fetch(base + '/api/animations/not-existing-slug');
+  assert.equal(notFound.status, 404);
+  assert.equal(notFound.headers.get('cache-control'), 'no-store');
+
+  const badRequest = await fetch(base + '/api/animations/INVALID_slug');
+  assert.equal(badRequest.status, 400);
+  assert.equal(badRequest.headers.get('cache-control'), 'no-store');
+});
