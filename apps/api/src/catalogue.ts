@@ -5,7 +5,7 @@ import { AnimationQuery } from './dto.js';
 import { searchTokens } from './search.js';
 const include = {
   category: { select: { slug: true, name: true } },
-  tags: { include: { tag: true } },
+  tags: { select: { tag: { select: { name: true } } } },
 } satisfies Prisma.AnimationInclude;
 type Record = Prisma.AnimationGetPayload<{ include: typeof include }>;
 function serialize(record: Record) {
@@ -37,33 +37,59 @@ export class Catalogue {
     const search = predicates.length
       ? Prisma.sql`AND ${Prisma.join(predicates, ' AND ')}`
       : Prisma.empty;
+    const categoryJoin = query.category
+      ? Prisma.sql`JOIN "AnimationCategory" c ON c.id = a."categoryId"`
+      : Prisma.empty;
     const category = query.category
       ? Prisma.sql`AND c.slug=${query.category}`
       : Prisma.empty;
     const difficulty = query.difficulty
       ? Prisma.sql`AND a.difficulty::text=${query.difficulty}`
       : Prisma.empty;
-    const from = Prisma.sql`FROM "Animation" a JOIN "AnimationCategory" c ON c.id=a."categoryId" WHERE a.published=true ${search} ${category} ${difficulty}`;
-    const [counts, matching] = await this.db.$transaction(
-      [
-        this.db.$queryRaw<{ total: bigint }[]>(
-          Prisma.sql`SELECT count(*) AS total ${from}`,
+    // Single-snapshot CTE fetches total count and ordered page IDs in one DB round-trip without transaction overhead.
+    const [pageResult] = await this.db.$queryRaw<
+      { total: number; ids: string[] }[]
+    >(
+      Prisma.sql`
+        WITH matched AS (
+          SELECT a.id, a."createdAt", a.slug
+          FROM "Animation" a
+          ${categoryJoin}
+          WHERE a.published = true ${search} ${category} ${difficulty}
         ),
-        this.db.$queryRaw<{ id: string }[]>(
-          Prisma.sql`SELECT a.id ${from} ORDER BY a."createdAt",a.slug LIMIT ${query.limit} OFFSET ${(query.page - 1) * query.limit}`,
-        ),
-      ],
-      { isolationLevel: 'RepeatableRead' },
+        paged AS (
+          SELECT id, "createdAt", slug
+          FROM matched
+          ORDER BY "createdAt", slug
+          LIMIT ${query.limit} OFFSET ${(query.page - 1) * query.limit}
+        )
+        SELECT
+          (SELECT count(*)::int FROM matched) AS total,
+          COALESCE((SELECT array_agg(id ORDER BY "createdAt", slug) FROM paged), ARRAY[]::text[]) AS ids
+      `,
     );
-    const ids = matching.map((row) => row.id);
+    const total = Number(pageResult?.total ?? 0);
+    const ids = pageResult?.ids ?? [];
+    if (ids.length === 0) {
+      return {
+        items: [],
+        total,
+        page: query.page,
+        limit: query.limit,
+      };
+    }
     const rows = await this.db.animation.findMany({
       where: { id: { in: ids }, published: true },
       include,
     });
-    const ordered = ids.flatMap((id) => rows.filter((row) => row.id === id));
+    const byId = new Map(rows.map((row) => [row.id, row]));
+    const ordered = ids.flatMap((id) => {
+      const row = byId.get(id);
+      return row ? [row] : [];
+    });
     return {
       items: ordered.map(serialize),
-      total: Number(counts[0]?.total ?? 0),
+      total,
       page: query.page,
       limit: query.limit,
     };

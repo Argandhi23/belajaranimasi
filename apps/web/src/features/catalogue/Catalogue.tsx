@@ -8,7 +8,12 @@ import type { AnimationPage, Category } from '@belajar/shared';
 import { getJson } from '../../lib/api';
 import { Loading, Failure } from '../../components/Feedback';
 import { Preview } from './Preview';
-import { catalogueQuery, catalogueRangeLabel } from './discovery';
+import {
+  catalogueQuery,
+  catalogueRangeLabel,
+  filterCatalogueLocally,
+  shouldFetchFilteredCatalogue,
+} from './discovery';
 
 gsap.registerPlugin(useGSAP);
 
@@ -79,16 +84,37 @@ export function Catalogue() {
   );
 
   const query = catalogueQuery(params);
-  const result = useQuery({
-    queryKey: ['animations', query],
-    queryFn: ({ signal }) =>
-      getJson<AnimationPage>(`/api/animations?${query}`, signal),
-  });
+  const hasTextSearch = Boolean(params.get('q')?.trim());
   const catalogueTotal = useQuery({
     queryKey: ['animations', baseCatalogueQuery],
     queryFn: ({ signal }) =>
       getJson<AnimationPage>(`/api/animations?${baseCatalogueQuery}`, signal),
   });
+  const localFiltered = catalogueTotal.data
+    ? filterCatalogueLocally(catalogueTotal.data, params)
+    : null;
+  const needsServerQuery = shouldFetchFilteredCatalogue({
+    query,
+    baseQuery: baseCatalogueQuery,
+    hasTextSearch,
+    hasLocalFilter: localFiltered !== null,
+    baseSucceeded: catalogueTotal.isSuccess,
+  });
+  const serverResult = useQuery({
+    queryKey: ['animations', query],
+    queryFn: ({ signal }) =>
+      getJson<AnimationPage>(`/api/animations?${query}`, signal),
+    enabled: needsServerQuery,
+  });
+  const result = needsServerQuery
+    ? serverResult
+    : {
+        isPending: catalogueTotal.isPending,
+        isError: catalogueTotal.isError,
+        data: localFiltered ?? catalogueTotal.data,
+        refetch: catalogueTotal.refetch,
+      };
+  const pageData = result.data;
   const rangeLabel = catalogueRangeLabel(
     catalogueTotal.data?.total,
     catalogueTotal.isPending,
@@ -96,6 +122,7 @@ export function Catalogue() {
   const categories = useQuery({
     queryKey: ['categories'],
     queryFn: ({ signal }) => getJson<Category[]>('/api/categories', signal),
+    staleTime: Infinity,
   });
   const update = (key: string, value: string) => {
     // History updates before React finishes a navigation transition. Read the
@@ -253,9 +280,9 @@ export function Catalogue() {
         )}
         {result.isPending ? (
           <Loading />
-        ) : result.isError ? (
+        ) : result.isError || !pageData ? (
           <Failure retry={() => void result.refetch()} />
-        ) : result.data.items.length === 0 ? (
+        ) : pageData.items.length === 0 ? (
           <div className="feedback">
             <h3>Belum ada gerakan yang cocok</h3>
             <p>
@@ -268,7 +295,7 @@ export function Catalogue() {
         ) : (
           <>
             <div className="animation-grid">
-              {result.data.items.map((animation) => (
+              {pageData.items.map((animation) => (
                 <article className="animation-card" key={animation.id}>
                   <Preview id={animation.demoId} />
                   <div className="card-body">
@@ -291,28 +318,26 @@ export function Catalogue() {
               ))}
             </div>
             <div className="results-footer">
-              <span>{result.data.total} eksperimen tersedia.</span>
-              {result.data.total > result.data.limit && (
+              <span>{pageData.total} eksperimen tersedia.</span>
+              {pageData.total > pageData.limit && (
                 <div>
                   <button
-                    disabled={result.data.page <= 1}
+                    disabled={pageData.page <= 1}
                     onClick={() =>
                       setParams({
                         ...Object.fromEntries(params),
-                        page: String(result.data.page - 1),
+                        page: String(pageData.page - 1),
                       })
                     }
                   >
                     Sebelumnya
                   </button>
                   <button
-                    disabled={
-                      result.data.page * result.data.limit >= result.data.total
-                    }
+                    disabled={pageData.page * pageData.limit >= pageData.total}
                     onClick={() =>
                       setParams({
                         ...Object.fromEntries(params),
-                        page: String(result.data.page + 1),
+                        page: String(pageData.page + 1),
                       })
                     }
                   >

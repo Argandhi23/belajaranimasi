@@ -4,17 +4,20 @@ import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, ArrowUpRight, MoveDown } from 'lucide-react';
 import type { Animation } from '@belajar/shared';
 import { demos } from '@belajar/animation-demos';
-import { getJson, ApiError } from '../../lib/api';
+import { getJson, ApiError, findCachedAnimation } from '../../lib/api';
 import { Failure, Loading } from '../../components/Feedback';
 import { difficultyNames } from '../catalogue/Catalogue';
 import { isDemoId } from '../catalogue/discovery';
 import { CodePanel, CopyButton } from './CodePanel';
 export function Detail({ fullscreen = false }: { fullscreen?: boolean }) {
   const { slug = '' } = useParams();
+  const cached = findCachedAnimation(slug);
   const result = useQuery({
     queryKey: ['animation', slug],
     queryFn: ({ signal }) =>
       getJson<Animation>(`/api/animations/${encodeURIComponent(slug)}`, signal),
+    initialData: cached?.data,
+    initialDataUpdatedAt: cached?.updatedAt,
   });
   const [source, setSource] = useState('');
   const [sourceError, setSourceError] = useState(false);

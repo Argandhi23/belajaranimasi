@@ -5,6 +5,7 @@ import {
   useId,
   useRef,
   useState,
+  type CSSProperties,
   type ReactNode,
 } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
@@ -52,7 +53,7 @@ function StaticTorus({
         placeItems: 'center',
         height: '100%',
         alignContent: 'center',
-        gap: 24,
+        gap: 20,
         padding: 24,
         textAlign: 'center',
       }}
@@ -68,55 +69,62 @@ function StaticTorus({
         }}
       >
         <defs>
-          <linearGradient id="torusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#a5b4fc" />
-            <stop offset="100%" stopColor="#4f46e5" />
+          <linearGradient
+            id="torusMonoGrad"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="100%" stopColor="#52525b" />
           </linearGradient>
         </defs>
         <circle
           cx="90"
           cy="90"
-          r="56"
+          r="54"
           fill="none"
-          stroke={wireframe ? '#a5b4fc' : 'url(#torusGrad)'}
-          strokeWidth={wireframe ? '3' : '16'}
+          stroke={wireframe ? '#d4d4d8' : 'url(#torusMonoGrad)'}
+          strokeWidth={wireframe ? '2.5' : '15'}
           strokeDasharray={wireframe ? '6 5' : undefined}
         />
         <ellipse
           cx="90"
           cy="90"
           rx="68"
-          ry="28"
+          ry="27"
           transform="rotate(32 90 90)"
           fill="none"
-          stroke="#c7d2fe"
-          strokeWidth="6"
+          stroke="#e4e4e7"
+          strokeWidth={wireframe ? '2' : '5'}
           strokeDasharray={wireframe ? '4 4' : undefined}
         />
         <ellipse
           cx="90"
           cy="90"
           rx="68"
-          ry="28"
+          ry="27"
           transform="rotate(-32 90 90)"
           fill="none"
-          stroke="#818cf8"
-          strokeWidth="6"
+          stroke="#71717a"
+          strokeWidth={wireframe ? '2' : '5'}
           strokeDasharray={wireframe ? '4 4' : undefined}
         />
       </svg>
       <p
         style={{
-          maxWidth: '46ch',
+          maxWidth: '42ch',
           margin: 0,
-          color: '#cbd5e1',
-          fontSize: '0.92rem',
+          color: '#a1a1aa',
+          fontSize: '0.88rem',
           lineHeight: 1.65,
         }}
       >
         {reason}
         <br />
-        Slider sudut rotasi tetap memutar ilustrasi simpul torus tanpa WebGL.
+        Pengatur sudut di samping tetap memutar pratinjau vektor patung Simpul
+        N-02.
       </p>
     </div>
   );
@@ -152,7 +160,7 @@ function TorusScene({
   const mesh = useRef<Mesh>(null);
   const initialized = useRef(false);
   const { invalidate, gl, size } = useThree();
-  const baseScale = Math.min(1, size.width / Math.max(1, size.height)) * 0.85;
+  const baseScale = Math.min(1, size.width / Math.max(1, size.height)) * 0.86;
 
   useEffect(() => {
     const canvas = gl.domElement;
@@ -209,15 +217,15 @@ function TorusScene({
 
   return (
     <>
-      <ambientLight intensity={1.1} />
-      <directionalLight position={[4, 6, 5]} color="#e0e7ff" intensity={2.8} />
-      <pointLight position={[-4, -3, 3]} color="#6366f1" intensity={1.6} />
+      <ambientLight intensity={0.75} />
+      <directionalLight position={[4, 6, 5]} color="#ffffff" intensity={3.2} />
+      <pointLight position={[-4, -3, 3]} color="#d4d4d8" intensity={1.4} />
       <mesh ref={mesh}>
         <torusKnotGeometry args={[1, 0.34, 128, 24]} />
         <meshStandardMaterial
-          color="#818cf8"
-          roughness={0.28}
-          metalness={0.35}
+          color="#f4f4f5"
+          roughness={0.22}
+          metalness={0.55}
           wireframe={wireframe}
         />
       </mesh>
@@ -246,199 +254,294 @@ export default function ThreeTorusOrbit() {
   }, []);
 
   const staticView = reduced || contextLost;
+  const degrees = Math.round((progress / 100) * 360);
 
   return (
     <section
       data-testid="demo-three-torus"
-      style={{
-        color: '#f8fafc',
-        background: '#090d16',
-        padding: 'clamp(22px, 4.5vw, 56px)',
-        display: 'grid',
-        gap: 24,
-      }}
+      style={
+        {
+          color: '#fafafa',
+          background: '#09090b',
+          padding: 'clamp(24px, 4.5vw, 56px)',
+          '--focus': '#ffffff',
+        } as CSSProperties
+      }
     >
-      <header style={{ maxWidth: 1040, margin: '0 auto', width: '100%' }}>
-        <h2
-          style={{
-            margin: '0 0 10px',
-            fontSize: 'clamp(1.75rem, 3.6vw, 3.1rem)',
-            fontWeight: 800,
-            letterSpacing: '-0.04em',
-            lineHeight: 1.06,
-          }}
-        >
-          Simpul Torus 3D Interaktif.
-        </h2>
-        <p
-          style={{
-            margin: 0,
-            maxWidth: '58ch',
-            color: '#94a3b8',
-            lineHeight: 1.65,
-            fontSize: '0.95rem',
-          }}
-        >
-          Pilih orientasi atau geser sudut rotasi. GSAP menginterpolasi rotasi
-          mesh React Three Fiber menggunakan demand rendering agar GPU tetap
-          hemat.
-        </p>
-      </header>
-
-      <div
-        data-testid="torus-stage"
-        style={{
-          maxWidth: 1040,
-          margin: '0 auto',
-          width: '100%',
-          height: 'clamp(300px, 52svh, 460px)',
-          position: 'relative',
-          borderRadius: 16,
-          border: '1px solid #1e293b',
-          overflow: 'hidden',
-          background:
-            'radial-gradient(circle at 50% 45%, #1e1b4b, #090d16 74%)',
-        }}
-      >
-        {staticView ? (
-          <StaticTorus
-            reason={
-              reduced
-                ? 'Pengurangan gerak aktif pada perangkat ini.'
-                : 'WebGL tidak tersedia atau konteks grafis terhenti.'
-            }
-            progress={progress}
-            wireframe={wireframe}
-          />
-        ) : (
-          <CanvasBoundary onFailure={handleContextLoss}>
-            <Canvas
-              frameloop="demand"
-              dpr={[1, 1.5]}
-              camera={{ position: [0, 0, 4.6], fov: 45 }}
-              gl={{ antialias: true, powerPreference: 'low-power' }}
-              fallback="WebGL tidak tersedia."
-              aria-label="Simpul torus tiga dimensi yang berputar dengan kontrol GSAP"
-            >
-              <TorusScene
-                activePreset={preset}
-                progress={progress}
-                wireframe={wireframe}
-                onContextLoss={handleContextLoss}
-              />
-            </Canvas>
-          </CanvasBoundary>
-        )}
-      </div>
-
       <div
         style={{
-          maxWidth: 1040,
+          maxWidth: 1080,
           margin: '0 auto',
           width: '100%',
           display: 'grid',
-          gap: 16,
-          padding: 20,
-          borderRadius: 14,
-          background: '#111827',
-          border: '1px solid #1e293b',
+          gridTemplateColumns:
+            'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
+          gap: 'clamp(20px, 3.5vw, 32px)',
+          alignItems: 'stretch',
         }}
       >
         <div
+          data-testid="torus-stage"
           style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 10,
+            minHeight: 'clamp(320px, 54svh, 500px)',
+            position: 'relative',
+            borderRadius: 18,
+            border: '1px solid #27272a',
+            overflow: 'hidden',
+            background:
+              'radial-gradient(circle at 50% 45%, #1d1d22, #09090b 74%)',
           }}
         >
           <div
-            role="group"
-            aria-label="Preset orientasi"
-            style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              inset: '16px 20px auto',
+              display: 'flex',
+              justifyContent: 'space-between',
+              fontSize: '0.7rem',
+              fontWeight: 700,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: '#a1a1aa',
+              pointerEvents: 'none',
+              zIndex: 2,
+              fontVariantNumeric: 'tabular-nums',
+            }}
           >
-            {presets.map((item) => {
-              const active = item.id === preset.id;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => setPreset(item)}
+            <span>N-02 · EDISI 048/100</span>
+            <span>
+              {wireframe ? 'Rangka' : 'Satin'} · {degrees}°
+            </span>
+          </div>
+
+          {staticView ? (
+            <StaticTorus
+              reason={
+                reduced
+                  ? 'Pengurangan gerak aktif pada perangkat ini.'
+                  : 'WebGL tidak tersedia atau konteks grafis terhenti.'
+              }
+              progress={progress}
+              wireframe={wireframe}
+            />
+          ) : (
+            <CanvasBoundary onFailure={handleContextLoss}>
+              <Canvas
+                frameloop="demand"
+                dpr={[1, 1.5]}
+                camera={{ position: [0, 0, 4.6], fov: 45 }}
+                gl={{ antialias: true, powerPreference: 'low-power' }}
+                fallback="WebGL tidak tersedia."
+                aria-label="Model tiga dimensi patung Simpul N-02 berbahan aluminium monokrom"
+              >
+                <TorusScene
+                  activePreset={preset}
+                  progress={progress}
+                  wireframe={wireframe}
+                  onContextLoss={handleContextLoss}
+                />
+              </Canvas>
+            </CanvasBoundary>
+          )}
+        </div>
+
+        <div
+          style={{
+            display: 'grid',
+            alignContent: 'space-between',
+            gap: 24,
+            padding: 'clamp(22px, 3.5vw, 32px)',
+            borderRadius: 18,
+            background: '#111114',
+            border: '1px solid #27272a',
+          }}
+        >
+          <header style={{ display: 'grid', gap: 10 }}>
+            <span
+              style={{
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: '#a1a1aa',
+              }}
+            >
+              Koleksi Objek · Seri 02
+            </span>
+            <h2
+              style={{
+                margin: 0,
+                fontSize: 'clamp(1.85rem, 3.6vw, 2.75rem)',
+                fontWeight: 800,
+                letterSpacing: '-0.045em',
+                lineHeight: 1.04,
+              }}
+            >
+              Simpul N-02
+            </h2>
+            <p
+              style={{
+                margin: 0,
+                color: '#a1a1aa',
+                lineHeight: 1.65,
+                fontSize: '0.9rem',
+              }}
+            >
+              Patung geometris kontinu dari aluminium daur ulang berfinishing
+              satin. Pilih sudut pandang atau periksa struktur rangkanya secara
+              langsung.
+            </p>
+          </header>
+
+          <dl
+            style={{
+              margin: 0,
+              paddingBlock: 16,
+              borderBlock: '1px solid #27272a',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+              gap: 12,
+            }}
+          >
+            {[
+              ['Material', 'Alu 6061'],
+              ['Dimensi', '18 × 18 cm'],
+              ['Finishing', 'Satin Matte'],
+            ].map(([label, value]) => (
+              <div key={label} style={{ display: 'grid', gap: 3 }}>
+                <dt
                   style={{
-                    padding: '9px 14px',
+                    fontSize: '0.68rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: '#a1a1aa',
+                  }}
+                >
+                  {label}
+                </dt>
+                <dd
+                  style={{
+                    margin: 0,
+                    fontSize: '0.84rem',
+                    fontWeight: 700,
+                    color: '#fafafa',
+                  }}
+                >
+                  {value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+
+          <div style={{ display: 'grid', gap: 18 }}>
+            <div style={{ display: 'grid', gap: 10 }}>
+              <span
+                style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  color: '#a1a1aa',
+                }}
+              >
+                Sudut pandang
+              </span>
+              <div
+                role="group"
+                aria-label="Preset orientasi"
+                style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}
+              >
+                {presets.map((item) => {
+                  const active = item.id === preset.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() => setPreset(item)}
+                      style={{
+                        padding: '8px 14px',
+                        borderRadius: 999,
+                        border: active
+                          ? '1px solid #ffffff'
+                          : '1px solid #27272a',
+                        background: active ? '#ffffff' : '#18181b',
+                        color: active ? '#09090b' : '#e4e4e7',
+                        font: 'inherit',
+                        fontSize: '0.82rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {item.label}
+                    </button>
+                  );
+                })}
+                <button
+                  type="button"
+                  aria-pressed={wireframe}
+                  onClick={() => setWireframe((prev) => !prev)}
+                  style={{
+                    padding: '8px 14px',
                     borderRadius: 999,
-                    border: active ? '1px solid #6366f1' : '1px solid #334155',
-                    background: active ? '#6366f1' : '#1e293b',
-                    color: '#f8fafc',
+                    border: wireframe
+                      ? '1px solid #ffffff'
+                      : '1px solid #3f3f46',
+                    background: wireframe ? '#ffffff' : 'transparent',
+                    color: wireframe ? '#09090b' : '#fafafa',
                     font: 'inherit',
-                    fontSize: '0.85rem',
-                    fontWeight: 600,
+                    fontSize: '0.82rem',
+                    fontWeight: 700,
                     cursor: 'pointer',
                   }}
                 >
-                  {item.label}
+                  Mode rangka
                 </button>
-              );
-            })}
-          </div>
-          <button
-            type="button"
-            aria-pressed={wireframe}
-            onClick={() => setWireframe((prev) => !prev)}
-            style={{
-              padding: '9px 14px',
-              borderRadius: 999,
-              border: wireframe ? '1px solid #a5b4fc' : '1px solid #334155',
-              background: wireframe ? '#312e81' : 'transparent',
-              color: '#e0e7ff',
-              font: 'inherit',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-          >
-            Mode rangka
-          </button>
-        </div>
+              </div>
+            </div>
 
-        <div style={{ display: 'grid', gap: 8 }}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: '0.875rem',
-              fontWeight: 600,
-            }}
-          >
-            <label htmlFor={rangeId}>Sudut rotasi</label>
-            <span
-              aria-hidden="true"
-              style={{
-                color: '#a5b4fc',
-                fontVariantNumeric: 'tabular-nums',
-              }}
-            >
-              {progress}%
-            </span>
+            <div style={{ display: 'grid', gap: 8 }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  fontSize: '0.84rem',
+                  fontWeight: 700,
+                }}
+              >
+                <label htmlFor={rangeId}>Sudut rotasi</label>
+                <span
+                  aria-hidden="true"
+                  style={{
+                    color: '#d4d4d8',
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
+                >
+                  {degrees}°
+                </span>
+              </div>
+              <input
+                id={rangeId}
+                type="range"
+                min={0}
+                max={100}
+                value={progress}
+                aria-valuetext={`${progress}%`}
+                onChange={(event) =>
+                  setProgress(event.currentTarget.valueAsNumber)
+                }
+                style={{
+                  width: '100%',
+                  minHeight: 34,
+                  margin: 0,
+                  accentColor: '#ffffff',
+                  cursor: 'pointer',
+                }}
+              />
+            </div>
           </div>
-          <input
-            id={rangeId}
-            type="range"
-            min={0}
-            max={100}
-            value={progress}
-            aria-valuetext={`${progress}%`}
-            onChange={(event) => setProgress(event.currentTarget.valueAsNumber)}
-            style={{
-              width: '100%',
-              minHeight: 34,
-              margin: 0,
-              accentColor: '#818cf8',
-              cursor: 'pointer',
-            }}
-          />
         </div>
       </div>
     </section>

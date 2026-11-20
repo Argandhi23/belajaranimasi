@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Copy, Check, AlertCircle } from 'lucide-react';
 export function CopyButton({ text, label }: { text: string; label: string }) {
   const [status, setStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
@@ -46,9 +46,33 @@ export function CodePanel({
   source: string;
   usesThree: boolean;
 }) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [visible, setVisible] = useState(
+    () => typeof IntersectionObserver === 'undefined',
+  );
   const [html, setHtml] = useState('');
+
+  useEffect(() => {
+    if (visible) return;
+    const node = sectionRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '300px' },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [visible]);
+
   useEffect(() => {
     let active = true;
+    setHtml('');
+    if (!visible) return;
     void import('./highlight')
       .then(({ highlight }) => highlight(source))
       .then((value) => {
@@ -60,9 +84,13 @@ export function CodePanel({
     return () => {
       active = false;
     };
-  }, [source]);
+  }, [source, visible]);
   return (
-    <section className="source-section" aria-labelledby="code-heading">
+    <section
+      ref={sectionRef}
+      className="source-section"
+      aria-labelledby="code-heading"
+    >
       <div className="section-title">
         <h2 id="code-heading">Kode sumber</h2>
         <CopyButton text={source} label="Copy Code" />

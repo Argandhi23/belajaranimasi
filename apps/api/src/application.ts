@@ -25,6 +25,7 @@ import {
   ApiServiceUnavailableResponse,
   ApiTags,
   DocumentBuilder,
+  type OpenAPIObject,
   SwaggerModule,
 } from '@nestjs/swagger';
 import type { Response } from 'express';
@@ -43,6 +44,8 @@ import {
 import { configuration } from './environment.js';
 const PUBLIC_CACHE_CONTROL =
   'public, max-age=0, s-maxage=60, stale-while-revalidate=300';
+const PUBLIC_CDN_CACHE_CONTROL =
+  'public, s-maxage=3600, stale-while-revalidate=86400';
 const validation = new ValidationPipe({
   transform: true,
   whitelist: true,
@@ -56,6 +59,8 @@ class SafeErrors implements ExceptionFilter {
       .switchToHttp()
       .getResponse<Response>()
       .setHeader('Cache-Control', 'no-store')
+      .setHeader('CDN-Cache-Control', 'no-store')
+      .setHeader('Vercel-CDN-Cache-Control', 'no-store')
       .status(status)
       .json({
         statusCode: status,
@@ -75,6 +80,8 @@ class CatalogueController {
   constructor(@Inject(Catalogue) private readonly catalogue: Catalogue) {}
   @Get('animations')
   @Header('Cache-Control', PUBLIC_CACHE_CONTROL)
+  @Header('CDN-Cache-Control', PUBLIC_CDN_CACHE_CONTROL)
+  @Header('Vercel-CDN-Cache-Control', PUBLIC_CDN_CACHE_CONTROL)
   @ApiOkResponse({ type: AnimationPage })
   @ApiBadRequestResponse({ type: ApiError })
   @ApiQuery({ name: 'q', required: false, type: String, maxLength: 200 })
@@ -101,27 +108,37 @@ class CatalogueController {
     default: 12,
   })
   async list(@Query() raw: AnimationQuery) {
-    const query = await validation.transform(raw, {
-      type: 'query',
-      metatype: AnimationQuery,
-    });
-    return this.catalogue.list(query as AnimationQuery);
+    const query =
+      raw instanceof AnimationQuery
+        ? raw
+        : ((await validation.transform(raw, {
+            type: 'query',
+            metatype: AnimationQuery,
+          })) as AnimationQuery);
+    return this.catalogue.list(query);
   }
   @Get('animations/:slug')
   @Header('Cache-Control', PUBLIC_CACHE_CONTROL)
+  @Header('CDN-Cache-Control', PUBLIC_CDN_CACHE_CONTROL)
+  @Header('Vercel-CDN-Cache-Control', PUBLIC_CDN_CACHE_CONTROL)
   @ApiOkResponse({ type: Animation })
   @ApiNotFoundResponse({ type: ApiError })
   @ApiBadRequestResponse({ type: ApiError })
   @ApiParam({ name: 'slug', type: String })
   async detail(@Param() raw: AnimationSlug) {
-    const params = (await validation.transform(raw, {
-      type: 'param',
-      metatype: AnimationSlug,
-    })) as AnimationSlug;
+    const params =
+      raw instanceof AnimationSlug
+        ? raw
+        : ((await validation.transform(raw, {
+            type: 'param',
+            metatype: AnimationSlug,
+          })) as AnimationSlug);
     return this.catalogue.detail(params.slug);
   }
   @Get('categories')
   @Header('Cache-Control', PUBLIC_CACHE_CONTROL)
+  @Header('CDN-Cache-Control', PUBLIC_CDN_CACHE_CONTROL)
+  @Header('Vercel-CDN-Cache-Control', PUBLIC_CDN_CACHE_CONTROL)
   @ApiOkResponse({ type: [Category] })
   categories() {
     return this.catalogue.categories();
@@ -132,6 +149,8 @@ class HealthController {
   constructor(@Inject(Database) private readonly db: Database) {}
   @Get('health')
   @Header('Cache-Control', 'no-store')
+  @Header('CDN-Cache-Control', 'no-store')
+  @Header('Vercel-CDN-Cache-Control', 'no-store')
   @ApiOkResponse({ type: Health })
   @ApiServiceUnavailableResponse({ type: ApiError })
   async health() {
@@ -171,17 +190,22 @@ export function configureApplication(app: INestApplication) {
     origin: configuration().origins,
     methods: ['GET'],
     credentials: false,
+    maxAge: 86400,
   });
   app.useGlobalPipes(validation);
   app.useGlobalFilters(new SafeErrors());
   app.enableShutdownHooks();
-  SwaggerModule.setup('api/docs', app, () => document(app));
+  let cachedDocument: OpenAPIObject | null = null;
+  SwaggerModule.setup('api/docs', app, () => {
+    cachedDocument ??= document(app);
+    return cachedDocument;
+  });
   return app;
 }
 export async function createApplication() {
   const app = await NestFactory.create(AppModule, {
     logger: false,
-    bodyParser: true,
+    bodyParser: false,
   });
   return configureApplication(app);
 }
