@@ -7,7 +7,7 @@ async function bootstrap() {
   loadLocalEnvironment();
   const app = await NestFactory.create(AppModule, {
     logger: false,
-    bodyParser: true,
+    bodyParser: false,
   });
   configureApplication(app);
   await app.listen(configuration().port);

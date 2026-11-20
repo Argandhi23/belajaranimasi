@@ -41,7 +41,7 @@ Dengan persetujuan pemilik, import repositori GitHub di Vercel sebagai proyek **
 Root Directory: apps/api
 Framework Preset: NestJS (otomatis terbaca dari apps/api/vercel.json)
 Install Command: cd ../.. && pnpm install --frozen-lockfile --ignore-scripts
-Build Command: pnpm build (menjalankan prisma generate && tsc -p tsconfig.json)
+Build Command: pnpm build (menjalankan prisma generate && tsc -p tsconfig.build.json)
 Region: sin1 (Singapura — diatur di apps/api/vercel.json)
 Node.js Version: 26.x
 ```
@@ -54,7 +54,11 @@ DATABASE_URL: pooled TLS URL role pembaca Neon (belajar_reader)
 CORS_ORIGINS: https://nama-web-proyek.vercel.app
 ```
 
-File `apps/api/vercel.json` sudah menyiapkan preset `nestjs`, region tunggal `sin1`, frozen install dari root monorepo, dan build yang menjalankan `prisma generate` sebelum kompilasi TypeScript. Endpoint katalog publik (`/api/animations`, `/api/animations/:slug`, `/api/categories`) mengirim header `Cache-Control: public, max-age=0, s-maxage=60, stale-while-revalidate=300` untuk memanfaatkan Vercel Edge Cache dan menghemat kuota Vercel + Neon, sementara `/health` serta respons error memakai `Cache-Control: no-store`.
+File `apps/api/vercel.json` sudah menyiapkan preset `nestjs`, region tunggal `sin1`, frozen install dari root monorepo, dan build `tsconfig.build.json` yang menjalankan `prisma generate` sebelum kompilasi hanya `src/**/*.ts` (tanpa menyertakan test/seed/script ke bundle function). Untuk menekan pemakaian kuota Vercel Hobby (invocations, Active CPU, provisioned memory, transfer) dan Neon Free (CU-hours):
+
+- Endpoint katalog publik (`/api/animations`, `/api/animations/:slug`, `/api/categories`) mengirim `Cache-Control: public, max-age=0, s-maxage=60, stale-while-revalidate=300` sekaligus `CDN-Cache-Control` dan `Vercel-CDN-Cache-Control: public, s-maxage=3600, stale-while-revalidate=86400` sehingga Vercel Edge CDN melayani respons hingga 1 jam tanpa memicu Fluid Compute maupun membangunkan Neon, dan tetap melayani stale hingga 24 jam sambil revalidasi latar belakang. `/health` serta respons error memakai `no-store` di ketiga header tersebut.
+- Query daftar animasi digabung ke satu CTE PostgreSQL (tanpa transaksi ganda, tanpa `JOIN` kategori saat filter kategori kosong) dan langsung berhenti saat hasil kosong; pool `pg` dibatasi `max: 3`, `idleTimeoutMillis: 5000`, `allowExitOnIdle: true` agar Neon Free bisa scale-to-zero dengan bersih. Body parser dimatikan karena API bersifat read-only (`GET` saja), dan preflight CORS dicache `maxAge: 86400`.
+- Frontend memakai cache TanStack Query in-memory (`staleTime` 10 menit, `gcTime` 30 menit, `refetchOnWindowFocus: false`, `refetchOnReconnect: false`), menormalisasi query pencarian agar memaksimalkan Edge CDN hit rate, menyaring kategori & tingkat kesulitan secara lokal saat seluruh katalog sudah termuat, mengisi halaman detail dari cache katalog, serta menunda pemuatan highlighter Shiki hingga panel kode mendekati viewport agar kunjungan demo layar penuh tidak mengunduh paket syntax highlighter. Aset hashed Vite di `/assets/*` dicache `immutable` 1 tahun lewat `vercel.json`.
 
 _(Catatan: file `render.yaml` tetap dipertahankan hanya sebagai referensi cadangan apabila suatu saat ingin membandingkan deployment container tradisional di Render Free; deployment utama menggunakan Vercel Hobby agar tidak terkena spin-down 15 menit / cold start ~60 detik Render Free.)_
 

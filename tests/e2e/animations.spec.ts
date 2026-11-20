@@ -26,7 +26,7 @@ test('magnetic button moves for a fine pointer and remains operable in reduced m
   page,
 }, testInfo) => {
   await page.goto('/demo/magnetic-button');
-  const button = page.getByRole('button', { name: 'Medan magnet' });
+  const button = page.getByRole('button', { name: 'Mulai diskusi proyek' });
   const surface = page.locator('[data-magnetic-surface]');
   await expect(button).toHaveAttribute('aria-pressed', 'false');
   if (testInfo.project.name === 'chromium') {
@@ -62,6 +62,12 @@ test('staggered grid replays and restores the static artwork when motion changes
   const tiles = page.locator('[data-stagger-tile]');
   await expect(tiles).toHaveCount(6);
   await expect(replay).toBeEnabled();
+  const replayBox = await replay.boundingBox();
+  const viewportWidth = await page.evaluate(() => window.innerWidth);
+  expect(replayBox).not.toBeNull();
+  expect(replayBox!.x + replayBox!.width).toBeLessThanOrEqual(
+    viewportWidth + 1,
+  );
   await replay.press('Enter');
   await expect
     .poll(() =>
@@ -153,7 +159,7 @@ test('FLIP changes layout with the keyboard and works with reduced motion', asyn
   await page.goto('/demo/flip-gallery');
   const grid = page.getByRole('button', { name: 'Grid', exact: true });
   const list = page.getByRole('button', { name: 'Daftar', exact: true });
-  const gallery = page.getByRole('list', { name: 'Galeri bentuk' });
+  const gallery = page.getByRole('list', { name: 'Arsip karya' });
   const secondCard = gallery.getByRole('listitem').nth(1);
   await expect(grid).toHaveAttribute('aria-pressed', 'true');
   const start = (await secondCard.boundingBox())!;
@@ -187,9 +193,14 @@ test('actual WebGL canvas survives StrictMode and rotates on scroll', async ({
     .evaluate((el) =>
       window.scrollTo(
         0,
-        el.getBoundingClientRect().top + scrollY + innerHeight * 0.65,
+        el.getBoundingClientRect().top + scrollY + innerHeight * 0.9,
       ),
     );
+  const stageTop = await page
+    .getByTestId('cube-stage')
+    .evaluate((el) => el.getBoundingClientRect().top);
+  expect(stageTop).toBeGreaterThanOrEqual(50);
+  expect(stageTop).toBeLessThanOrEqual(90);
   await expect
     .poll(async () =>
       Buffer.compare(before, await page.locator('canvas').screenshot()),
@@ -299,6 +310,10 @@ test('svg draw reduces strokeDashoffset on scroll, navigates cleanly and shows f
   await page.goto('/demo/svg-draw');
   const path = page.getByTestId('svg-draw-path');
   await expect(path).toBeVisible();
+  const svgBox = await page.locator('#demo svg').first().boundingBox();
+  const viewportWidth = await page.evaluate(() => window.innerWidth);
+  expect(svgBox).not.toBeNull();
+  expect(svgBox!.x + svgBox!.width).toBeLessThanOrEqual(viewportWidth + 1);
   const initialOffset = await path.evaluate((el) =>
     parseFloat(getComputedStyle(el).strokeDashoffset),
   );
@@ -410,6 +425,12 @@ test('timeline choreography scrubs with range slider and disables replay in redu
 
   await expect(range).toHaveValue('100');
   await expect(replay).toBeEnabled();
+  const replayBox = await replay.boundingBox();
+  const viewportWidth = await page.evaluate(() => window.innerWidth);
+  expect(replayBox).not.toBeNull();
+  expect(replayBox!.x + replayBox!.width).toBeLessThanOrEqual(
+    viewportWidth + 1,
+  );
 
   await range.press('Home');
   await expect(range).toHaveValue('0');

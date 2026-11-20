@@ -26,7 +26,7 @@ export function Preview({ id }: { id: string }) {
           if (id === 'depth-parallax')
             timeline.to(
               '.preview-shape',
-              { y: (index) => [-10, -28, -50][index], stagger: 0 },
+              { y: (index) => [-10, -28, -48][index], stagger: 0 },
               0,
             );
           else if (id === 'svg-draw')
@@ -53,17 +53,17 @@ export function Preview({ id }: { id: string }) {
           else if (id === 'flip-gallery')
             timeline.to('.preview-tiles i', {
               x: (index) => [34, 0, -34][index],
-              y: (index) => [-34, 0, 34][index],
+              y: (index) => [-30, 0, 30][index],
             });
           else if (id === 'motion-path')
             timeline.to('.preview-path-orbit', { rotation: 240, ease: 'none' });
           else if (id === 'magnetic-button')
-            timeline.to('.preview-magnet', { x: 25, y: -17, rotation: -8 });
+            timeline.to('.preview-magnet', { x: 24, y: -15, rotation: -6 });
           else if (id === 'stagger-grid')
             timeline.from('.preview-stagger i', {
               y: 18,
               scale: 0.65,
-              opacity: 0.35,
+              opacity: 0.3,
               duration: 0.6,
               stagger: 0.1,
             });
@@ -75,13 +75,13 @@ export function Preview({ id }: { id: string }) {
           else if (id === 'text-scramble')
             timeline.fromTo(
               '.preview-scramble span',
-              { opacity: 0.35, y: 10 },
+              { opacity: 0.3, y: 10 },
               { opacity: 1, y: 0, stagger: 0.14, duration: 0.55 },
             );
           else if (id === 'timeline-choreography')
             timeline.fromTo(
               '.preview-timeline i',
-              { scaleX: 0.35, opacity: 0.4 },
+              { scaleX: 0.3, opacity: 0.35 },
               {
                 scaleX: 1,
                 opacity: 1,
@@ -129,13 +129,13 @@ export function Preview({ id }: { id: string }) {
           </>
         ) : id === 'scroll-cube' ? (
           <svg className="preview-shape cube-sketch" viewBox="0 0 150 170">
-            <path d="M75 8 139 43v77l-64 40-64-40V43Z" fill="#efac6a" />
-            <path d="m75 8 64 35-64 39-64-39Z" fill="#ffd4a7" />
-            <path d="M75 82v78l64-40V43Z" fill="#dd8541" />
+            <path d="M75 8 139 43v77l-64 40-64-40V43Z" fill="#71717a" />
+            <path d="m75 8 64 35-64 39-64-39Z" fill="#fafafa" />
+            <path d="M75 82v78l64-40V43Z" fill="#27272a" />
             <path
               d="m11 43 64 39 64-39M75 82v78"
               fill="none"
-              stroke="#9c512c"
+              stroke="#09090b"
               strokeWidth="1.5"
             />
           </svg>
@@ -144,37 +144,44 @@ export function Preview({ id }: { id: string }) {
             <path
               d="M 16 78 C 52 18, 92 98, 126 38 C 144 12, 156 54, 166 28"
               fill="none"
-              stroke="#9af4ce"
-              strokeWidth="4"
+              stroke="#52525b"
+              strokeWidth="3"
               strokeLinecap="round"
-              strokeDasharray="5 7"
+              strokeDasharray="4 7"
             />
             <path
               className="svg-draw-line"
               d="M 16 78 C 52 18, 92 98, 126 38 C 144 12, 156 54, 166 28"
               fill="none"
-              stroke="#e0ff95"
-              strokeWidth="6"
+              stroke="#ffffff"
+              strokeWidth="5"
               strokeLinecap="round"
             />
-            <circle cx="16" cy="78" r="5" fill="#e0ff95" />
-            <circle cx="166" cy="28" r="5" fill="#e0ff95" />
+            <circle cx="16" cy="78" r="5" fill="#ffffff" />
+            <circle
+              cx="166"
+              cy="28"
+              r="5"
+              fill="#09090b"
+              stroke="#ffffff"
+              strokeWidth="2.5"
+            />
           </svg>
         ) : id === 'svg-morph' ? (
           <svg className="preview-shape svg-morph-sketch" viewBox="0 0 120 120">
             <path
               d={PREVIEW_MORPH_END}
               fill="none"
-              stroke="#d7abc3"
-              strokeWidth="2.5"
+              stroke="#52525b"
+              strokeWidth="2"
               strokeDasharray="4 5"
             />
             <path
               className="svg-morph-shape"
               d={PREVIEW_MORPH_START}
-              fill="#dc94c16b"
-              stroke="#ffd3ef"
-              strokeWidth="4.5"
+              fill="#fafafa"
+              stroke="#ffffff"
+              strokeWidth="3.5"
               strokeLinejoin="round"
             />
           </svg>
@@ -218,8 +225,8 @@ export function Preview({ id }: { id: string }) {
               cy="60"
               r="36"
               fill="none"
-              stroke="#818cf8"
-              strokeWidth="10"
+              stroke="#fafafa"
+              strokeWidth="9"
             />
             <ellipse
               cx="60"
@@ -228,8 +235,8 @@ export function Preview({ id }: { id: string }) {
               ry="18"
               transform="rotate(35 60 60)"
               fill="none"
-              stroke="#c7d2fe"
-              strokeWidth="5"
+              stroke="#a1a1aa"
+              strokeWidth="4"
             />
             <ellipse
               cx="60"
@@ -238,8 +245,8 @@ export function Preview({ id }: { id: string }) {
               ry="18"
               transform="rotate(-35 60 60)"
               fill="none"
-              stroke="#38bdf8"
-              strokeWidth="5"
+              stroke="#52525b"
+              strokeWidth="4"
             />
           </svg>
         ) : id === 'text-scramble' ? (

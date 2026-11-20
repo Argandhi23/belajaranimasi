@@ -1,14 +1,32 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type CSSProperties } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
 
 gsap.registerPlugin(useGSAP, ScrambleTextPlugin);
 
-const phrases = [
-  'Gerak memberi makna',
-  'Kode membentuk ritme',
-  'Interaksi terasa hidup',
+const statements = [
+  {
+    text: 'Gerak memberi makna',
+    caption:
+      'Setiap transisi membantu mata membaca arah dan hubungan antarelemen — bukan sekadar hiasan di atas halaman.',
+    index: '01',
+    discipline: 'Prinsip Visual',
+  },
+  {
+    text: 'Kode membentuk ritme',
+    caption:
+      'Arsitektur yang bersih melahirkan interaksi yang konsisten: cepat merespons, ringan dijalankan, dan mudah dirawat.',
+    index: '02',
+    discipline: 'Prinsip Rekayasa',
+  },
+  {
+    text: 'Interaksi terasa hidup',
+    caption:
+      'Detail kecil yang presisi mengubah kunjungan singkat menjadi pengalaman digital yang tenang dan mudah diingat.',
+    index: '03',
+    discipline: 'Prinsip Pengalaman',
+  },
 ] as const;
 
 export default function TextScramble() {
@@ -17,7 +35,7 @@ export default function TextScramble() {
   const bar = useRef<HTMLDivElement>(null);
   const timeline = useRef<gsap.core.Timeline | null>(null);
   const playOnUpdate = useRef(false);
-  const [activePhrase, setActivePhrase] = useState<string>(phrases[0]);
+  const [activePhrase, setActivePhrase] = useState<string>(statements[0].text);
   const [motionEnabled, setMotionEnabled] = useState(false);
 
   useGSAP(
@@ -92,67 +110,96 @@ export default function TextScramble() {
     setActivePhrase(phrase);
   }
 
+  const currentItem =
+    statements.find((item) => item.text === activePhrase) ?? statements[0];
+
   return (
     <section
       ref={root}
       data-testid="demo-text-scramble"
-      style={{
-        background: '#090d16',
-        color: '#f8fafc',
-        padding: 'clamp(28px, 6vw, 72px) clamp(20px, 5vw, 60px)',
-        display: 'grid',
-        gap: 28,
-      }}
+      style={
+        {
+          background: '#09090b',
+          color: '#fafafa',
+          padding: 'clamp(28px, 5.5vw, 68px) clamp(20px, 5vw, 56px)',
+          display: 'grid',
+          gridTemplateColumns: 'minmax(0, 1fr)',
+          gap: 24,
+          '--focus': '#ffffff',
+        } as CSSProperties
+      }
     >
       <div
         style={{
-          maxWidth: 1000,
+          maxWidth: 1040,
           margin: '0 auto',
           width: '100%',
-          padding: 'clamp(28px, 5vw, 52px)',
-          borderRadius: 16,
+          padding: 'clamp(26px, 4.8vw, 52px)',
+          borderRadius: 18,
           background:
-            'radial-gradient(circle at 20% 20%, #1e1b4b, #111827 72%)',
-          border: '1px solid #1e293b',
+            'radial-gradient(circle at 18% 18%, #1c1c21, #0d0d10 72%)',
+          border: '1px solid #27272a',
           display: 'grid',
-          gap: 20,
+          gap: 22,
         }}
       >
-        <span
+        <div
           style={{
-            fontSize: '0.78rem',
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            gap: 10,
+            paddingBottom: 16,
+            borderBottom: '1px solid #27272a',
+            fontSize: '0.72rem',
             fontWeight: 700,
-            letterSpacing: '0.08em',
+            letterSpacing: '0.14em',
             textTransform: 'uppercase',
-            color: '#a5b4fc',
+            color: '#a1a1aa',
+            fontVariantNumeric: 'tabular-nums',
           }}
         >
-          ScrambleTextPlugin · Decode
-        </span>
+          <span>Manifesto Studio · {currentItem.discipline}</span>
+          <span>{currentItem.index} / 03</span>
+        </div>
+
         <h2
           ref={target}
           data-testid="scramble-target"
           aria-live="polite"
           style={{
             margin: 0,
-            minHeight: '2.2em',
+            minHeight: '2.1em',
             display: 'flex',
             alignItems: 'center',
-            fontSize: 'clamp(1.85rem, 5.2vw, 4.25rem)',
+            fontSize: 'clamp(2rem, 5.6vw, 4.5rem)',
             fontWeight: 800,
-            letterSpacing: '-0.04em',
-            lineHeight: 1.08,
-            color: '#f8fafc',
+            letterSpacing: '-0.048em',
+            lineHeight: 1.04,
+            color: '#ffffff',
           }}
         >
           {activePhrase}
         </h2>
+
+        <p
+          style={{
+            margin: 0,
+            maxWidth: '54ch',
+            fontSize: '0.96rem',
+            lineHeight: 1.68,
+            color: '#a1a1aa',
+          }}
+        >
+          {currentItem.caption}
+        </p>
+
         <div
           aria-hidden="true"
           style={{
-            height: 4,
+            height: 2,
             borderRadius: 999,
-            background: '#1e293b',
+            background: '#27272a',
             overflow: 'hidden',
           }}
         >
@@ -162,7 +209,7 @@ export default function TextScramble() {
             style={{
               height: '100%',
               width: '100%',
-              background: 'linear-gradient(90deg, #6366f1, #38bdf8)',
+              background: '#ffffff',
               transformOrigin: 'left center',
             }}
           />
@@ -171,7 +218,7 @@ export default function TextScramble() {
 
       <div
         style={{
-          maxWidth: 1000,
+          maxWidth: 1040,
           margin: '0 auto',
           width: '100%',
           display: 'flex',
@@ -183,30 +230,30 @@ export default function TextScramble() {
       >
         <div
           role="group"
-          aria-label="Pilih frasa"
+          aria-label="Pilih prinsip manifesto"
           style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}
         >
-          {phrases.map((phrase) => {
-            const active = activePhrase === phrase;
+          {statements.map((item) => {
+            const active = activePhrase === item.text;
             return (
               <button
-                key={phrase}
+                key={item.text}
                 type="button"
                 aria-pressed={active}
-                onClick={() => selectPhrase(phrase)}
+                onClick={() => selectPhrase(item.text)}
                 style={{
-                  padding: '9px 14px',
+                  padding: '9px 16px',
                   borderRadius: 999,
-                  border: active ? '1px solid #6366f1' : '1px solid #334155',
-                  background: active ? '#6366f1' : '#111827',
-                  color: '#f8fafc',
+                  border: active ? '1px solid #ffffff' : '1px solid #27272a',
+                  background: active ? '#ffffff' : '#111114',
+                  color: active ? '#09090b' : '#e4e4e7',
                   font: 'inherit',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
+                  fontSize: '0.84rem',
+                  fontWeight: 700,
                   cursor: 'pointer',
                 }}
               >
-                {phrase}
+                {item.text}
               </button>
             );
           })}
@@ -219,11 +266,11 @@ export default function TextScramble() {
           style={{
             padding: '10px 18px',
             borderRadius: 999,
-            border: '1px solid #818cf8',
-            background: motionEnabled ? '#e0e7ff' : '#1e293b',
-            color: motionEnabled ? '#1e1b4b' : '#94a3b8',
+            border: motionEnabled ? '1px solid #ffffff' : '1px solid #27272a',
+            background: motionEnabled ? '#ffffff' : '#18181b',
+            color: motionEnabled ? '#09090b' : '#71717a',
             font: 'inherit',
-            fontSize: '0.85rem',
+            fontSize: '0.84rem',
             fontWeight: 700,
             cursor: motionEnabled ? 'pointer' : 'not-allowed',
           }}

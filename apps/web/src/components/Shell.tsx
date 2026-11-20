@@ -16,6 +16,10 @@ export function Shell() {
   const { pathname } = useLocation();
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
+    const meta = document.querySelector<HTMLMetaElement>(
+      'meta[name="theme-color"]',
+    );
+    if (meta) meta.content = theme === 'dark' ? '#050506' : '#fafafa';
     try {
       localStorage.setItem('ba-theme', theme);
     } catch {
