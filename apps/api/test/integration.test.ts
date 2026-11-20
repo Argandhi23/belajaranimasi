@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { loadLocalEnvironment } from '../src/environment.js';
-import { createApplication } from '../src/app.js';
+import { createApplication } from '../src/application.js';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../src/generated/prisma/client.js';
 import { seed } from '../prisma/seed.js';

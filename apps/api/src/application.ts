@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import {
   ArgumentsHost,
   Catch,
@@ -7,6 +8,7 @@ import {
   Get,
   Header,
   HttpException,
+  INestApplication,
   Inject,
   Module,
   Param,
@@ -26,7 +28,7 @@ import {
   SwaggerModule,
 } from '@nestjs/swagger';
 import type { Response } from 'express';
-import helmet from 'helmet';
+import helmetImport, { type HelmetOptions } from 'helmet';
 import { Catalogue } from './catalogue.js';
 import { Database } from './database.js';
 import {
@@ -137,16 +139,33 @@ class HealthController {
     return { status: 'ok' };
   }
 }
+type HelmetMiddleware = (
+  req: IncomingMessage,
+  res: ServerResponse,
+  next: (err?: unknown) => void,
+) => void;
+type HelmetFactory = (options?: Readonly<HelmetOptions>) => HelmetMiddleware;
+function resolveHelmet(imported: unknown): HelmetFactory {
+  if (typeof imported === 'function') {
+    return imported as HelmetFactory;
+  }
+  if (
+    typeof imported === 'object' &&
+    imported !== null &&
+    'default' in imported &&
+    typeof (imported as { default: unknown }).default === 'function'
+  ) {
+    return (imported as { default: HelmetFactory }).default;
+  }
+  throw new Error('Unable to resolve helmet middleware');
+}
 @Module({
   controllers: [CatalogueController, HealthController],
   providers: [Catalogue, Database],
 })
-class AppModule {}
-export async function createApplication() {
-  const app = await NestFactory.create(AppModule, {
-    logger: false,
-    bodyParser: true,
-  });
+export class AppModule {}
+export function configureApplication(app: INestApplication) {
+  const helmet = resolveHelmet(helmetImport);
   app.use(helmet());
   app.enableCors({
     origin: configuration().origins,
@@ -159,7 +178,14 @@ export async function createApplication() {
   SwaggerModule.setup('api/docs', app, () => document(app));
   return app;
 }
-export function document(app: Awaited<ReturnType<typeof createApplication>>) {
+export async function createApplication() {
+  const app = await NestFactory.create(AppModule, {
+    logger: false,
+    bodyParser: true,
+  });
+  return configureApplication(app);
+}
+export function document(app: INestApplication) {
   return SwaggerModule.createDocument(
     app,
     new DocumentBuilder()
