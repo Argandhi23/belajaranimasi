@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises';
 import { format } from 'prettier';
-import { createApplication, document } from '../src/app.js';
+import { createApplication, document } from '../src/application.js';
 process.env.DATABASE_URL ??= 'postgresql://unused:unused@localhost:5433/unused';
 const app = await createApplication();
 await writeFile(

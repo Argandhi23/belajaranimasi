@@ -1,10 +1,16 @@
-import { createApplication } from './app.js';
+import 'reflect-metadata';
+import { NestFactory } from '@nestjs/core';
+import { AppModule, configureApplication } from './application.js';
 import { configuration, loadLocalEnvironment } from './environment.js';
 
 async function bootstrap() {
   loadLocalEnvironment();
-  const app = await createApplication();
-  await app.listen(configuration().port, '0.0.0.0');
+  const app = await NestFactory.create(AppModule, {
+    logger: false,
+    bodyParser: true,
+  });
+  configureApplication(app);
+  await app.listen(configuration().port);
 }
 
 void bootstrap();
